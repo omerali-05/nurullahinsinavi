@@ -209,6 +209,13 @@ const MQTT_BROKERS = [
 
 let mqttLib = null, cTok = 0, isMp = false, myRole = 'solo', myCode = '', myName = '', mySeat = 0, mpHost = null, mpClient = null;
 try { myName = localStorage.getItem('nname') || ''; } catch(e) {}
+try {
+  if (window.caches) {
+    caches.keys().then(keys => {
+      keys.forEach(k => { if (k !== 'nurullah-sinavi-v3') caches.delete(k); });
+    }).catch(()=>{});
+  }
+} catch(e) {}
 const gn = () => {
   const e = $('nm');
   const v = e ? e.value.trim().slice(0, 10) : myName;
@@ -651,6 +658,23 @@ function leave(){
   isMp=false;myRole='solo';st='menu';
 }
 
+function forceUpdate(){
+  if(window.caches){
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>{
+      if(navigator.serviceWorker && navigator.serviceWorker.getRegistrations){
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          for(let reg of regs) reg.unregister();
+          window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+        });
+      } else {
+        window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+      }
+    });
+  } else {
+    window.location.reload(true);
+  }
+}
+
 /* =========================================================
    MENÜ VE LOBİ EKRANLARI
    ========================================================= */
@@ -667,13 +691,18 @@ function menu(){
   ${D.map((d,i)=>`<button data-d='${i}'>${d.n} (${d.nq} Soru) · Rekor: ${best(i)}</button>`).join('')}
   <button data-d='${RND}'>🎲 Rastgele Zorluk</button>
   <button id='dl' style="background:#2b3060;color:#f5d76e">⚔️ ÇOK OYUNCULU MOD (2-8 Kişi)</button>
-  <button id='fsb' style='font-size:20px'>⛶ Tam ekran</button>`;
+  <button id='fsb' style='font-size:20px'>⛶ Tam ekran</button>
+  <div style="margin-top:5px;display:flex;justify-content:space-between;align-items:center;font-size:16px;color:#4ade80;width:100%;max-width:340px">
+    <span>● Sürüm v3.1 (Bulut Motoru)</span>
+    <span id="btn-upd" style="color:#8fd3ff;text-decoration:underline;cursor:pointer">Önbelleği Temizle</span>
+  </div>`;
   
   $('nm').value=myName;
   $('tog-ai').onclick=()=>{noAi=!noAi;menu()};
   o.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{au();gn();startSolo(+b.dataset.d)});
   $('dl').onclick=()=>{au();gn();duelMenu()};
   $('fsb').onclick=toggleFullScreen;
+  $('btn-upd').onclick=forceUpdate;
 }
 
 function toggleFullScreen(){
@@ -690,7 +719,8 @@ function duelMenu(msg){
   <input id='cd' maxlength='4' placeholder='KOD' style='text-transform:uppercase'>
   <button id='jn'>Odaya Katıl</button>
   <p id='ds' style='color:#ff6b6b;min-height:22px'>${msg||''}</p>
-  <button id='bk' style='font-size:20px'>← Ana Menü</button>`;
+  <button id='bk' style='font-size:20px'>← Ana Menü</button>
+  <div style="margin-top:6px;font-size:15px;color:#8fd3ff;cursor:pointer;text-decoration:underline" id="btn-upd2">🔄 Yeni Sürümü Zorla Yükle / Önbelleği Temizle</div>`;
   
   $('gen').onclick=()=>startHostConnect();
   $('jn').onclick=()=>{
@@ -699,6 +729,7 @@ function duelMenu(msg){
     startGuestConnect(k);
   };
   $('bk').onclick=menu;
+  $('btn-upd2').onclick=forceUpdate;
 }
 
 const newCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let k='';for(let i=0;i<4;i++)k+=c[Math.random()*c.length|0];return k};
@@ -768,7 +799,11 @@ function renderLobby(){
   let h=`<h1>⚔️ SINIF LOBİSİ</h1>`;
   if(isHost){
     h+=`<p>Arkadaşlarına bu kodu ver:</p>
-    <div style='font-size:68px;color:#4ade80;letter-spacing:6px;line-height:1;margin:4px 0;font-weight:bold'>${myCode}</div>`;
+    <div style='font-size:68px;color:#4ade80;letter-spacing:6px;line-height:1;margin:4px 0;font-weight:bold'>${myCode}</div>
+    <div class="row" style="margin:4px 0 6px 0;width:100%;max-width:340px">
+      <button id="wp-share" style="background:#1f7a3a;color:#fff;border-color:#4ade80;flex:1;font-size:18px">📲 WhatsApp Daveti</button>
+      <button id="cp-link" style="flex:1;font-size:18px">📋 Linki Kopyala</button>
+    </div>`;
   }else{
     h+=`<p>Oda Kodu: <b style="color:#4ade80;font-size:26px">${myCode}</b></p>`;
   }
@@ -814,6 +849,18 @@ function renderLobby(){
   
   $('bk').onclick=menu;
   if(isHost){
+    const inviteUrl = window.location.origin + window.location.pathname + '?oda=' + myCode + '&v=3';
+    $('wp-share').onclick = () => {
+      const txt = encodeURIComponent("Nurullah'ın Sınavı oyununa davet edildin! 🎮\nOda Kodu: " + myCode + "\nDoğrudan odaya katılmak için tıkla:\n" + inviteUrl);
+      window.open('https://api.whatsapp.com/send?text=' + txt, '_blank');
+    };
+    $('cp-link').onclick = () => {
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(inviteUrl).then(()=>showBanner('📋 Davet linki kopyalandı!', 2000)).catch(()=>prompt('Davet linki:', inviteUrl));
+      } else {
+        prompt('Davet linkini kopyala:', inviteUrl);
+      }
+    };
     o.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{
       selDf=+b.dataset.z;mpHost.state.df=selDf;mpHost.broadcast({t:'lobby_sync',state:mpHost.state});renderLobby();
     });
@@ -1335,6 +1382,20 @@ ab.addEventListener('contextmenu',e=>e.preventDefault());
 
 menu();
 requestAnimationFrame(loop);
+
+/* Otomatik Oda Katılımı (?oda=KOD) */
+try {
+  const urlParams = new URLSearchParams(window.location.search);
+  const autoRoom = urlParams.get('oda') || urlParams.get('room');
+  if (autoRoom && /^[A-Z0-9]{4}$/i.test(autoRoom.trim())) {
+    setTimeout(() => {
+      duelMenu();
+      const codeClean = autoRoom.trim().toUpperCase();
+      if ($('cd')) $('cd').value = codeClean;
+      startGuestConnect(codeClean);
+    }, 400);
+  }
+} catch(e) {}
 
 /* PWA Service Worker & Auto Update */
 if('serviceWorker' in navigator){
