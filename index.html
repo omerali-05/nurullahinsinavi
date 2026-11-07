@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#0d0d1a;--bx:#171a33;--ln:#f5d76e;--tx:#f4f4f4}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -198,207 +199,420 @@ const mb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.im
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 
 /* =========================================================
-   P2P MULTIPLAYER ENGINE (2-8 OYUNCU, STAR TOPOLOGY / WebRTC)
+   REAL-TIME MULTIPLAYER ENGINE (MQTT CLOUD RELAY)
+   2-8 Oyuncu, Sıfır NAT/Port Engeli, Anında Bağlantı
    ========================================================= */
-const PID='nurullah-sinavi-v2-';
-let peerLib=null,cTok=0,isMp=false,myRole='solo',myCode='',myName='',mySeat=0,mpHost=null,mpClient=null;
-try{myName=localStorage.getItem('nname')||''}catch(e){}
-const gn=()=>{const e=$('nm');const v=e?e.value.trim().slice(0,10):myName;myName=v;try{localStorage.setItem('nname',v)}catch(x){}return v};
+const MQTT_BROKERS = [
+  { host: 'broker.emqx.io', port: 8084, path: '/mqtt' },
+  { host: 'broker.hivemq.com', port: 8884, path: '/mqtt' }
+];
 
-function loadPeer(){if(window.Peer)return Promise.resolve(window.Peer);if(peerLib)return peerLib;
- const srcs=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
- peerLib=new Promise((res,rej)=>{let i=0;const nx=()=>{if(i>=srcs.length){peerLib=null;return rej(new Error('lib'))}const s=document.createElement('script');s.src=srcs[i++];s.onload=()=>window.Peer?res(window.Peer):nx();s.onerror=()=>{s.remove();nx()};document.head.appendChild(s)};nx()});return peerLib}
-function openPeer(P,id){return new Promise((res,rej)=>{let done=false;const p=id?new P(id,{debug:0}):new P({debug:0});
- const to=setTimeout(()=>{if(!done){done=true;try{p.destroy()}catch(e){}rej({type:'timeout'})}},15000);
- p.on('open',()=>{if(!done){done=true;clearTimeout(to);res(p)}});
- p.on('error',e=>{if(!done){done=true;clearTimeout(to);try{p.destroy()}catch(x){}rej(e)}})})}
+let mqttLib = null, cTok = 0, isMp = false, myRole = 'solo', myCode = '', myName = '', mySeat = 0, mpHost = null, mpClient = null;
+try { myName = localStorage.getItem('nname') || ''; } catch(e) {}
+const gn = () => {
+  const e = $('nm');
+  const v = e ? e.value.trim().slice(0, 10) : myName;
+  myName = v;
+  try { localStorage.setItem('nname', v); } catch(x) {}
+  return v;
+};
+
+function loadMqtt() {
+  const P = window.Paho;
+  if (P && (P.Client || (P.MQTT && P.MQTT.Client))) return Promise.resolve(P);
+  if (mqttLib) return mqttLib;
+  const srcs = [
+    'https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js',
+    'https://cdn.jsdelivr.net/npm/paho-mqtt@1.1.0/paho-mqtt-min.js',
+    'https://unpkg.com/paho-mqtt@1.1.0/paho-mqtt-min.js'
+  ];
+  mqttLib = new Promise((res, rej) => {
+    let i = 0;
+    const nx = () => {
+      if (i >= srcs.length) { mqttLib = null; return rej(new Error('lib')); }
+      const s = document.createElement('script');
+      s.src = srcs[i++];
+      s.onload = () => (window.Paho ? res(window.Paho) : nx());
+      s.onerror = () => { s.remove(); nx(); };
+      document.head.appendChild(s);
+    };
+    nx();
+  });
+  return mqttLib;
+}
+
+function connectMqtt(clientId) {
+  return new Promise((resolve, reject) => {
+    let idx = 0;
+    function tryNext() {
+      if (idx >= MQTT_BROKERS.length) {
+        return reject(new Error('Sunuculara bağlanılamadı.'));
+      }
+      const b = MQTT_BROKERS[idx++];
+      const Paho = window.Paho;
+      const Client = Paho.Client || (Paho.MQTT && Paho.MQTT.Client);
+      const c = new Client(b.host, b.port, b.path, clientId);
+      let settled = false;
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          try { c.disconnect(); } catch(e) {}
+          tryNext();
+        }
+      }, 3500);
+
+      c.connect({
+        useSSL: true,
+        timeout: 4,
+        keepAliveInterval: 30,
+        cleanSession: true,
+        onSuccess: () => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timer);
+            resolve(c);
+          }
+        },
+        onFailure: () => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timer);
+            tryNext();
+          }
+        }
+      });
+    }
+    tryNext();
+  });
+}
+
+function sendMqtt(client, topic, data) {
+  if (!client || (client.isConnected && !client.isConnected())) return;
+  try {
+    const Paho = window.Paho;
+    const Message = Paho.Message || (Paho.MQTT && Paho.MQTT.Message);
+    const m = new Message(JSON.stringify(data));
+    m.destinationName = topic;
+    m.qos = 1;
+    client.send(m);
+  } catch(e) {
+    console.warn('sendMqtt err:', e);
+  }
+}
 
 /* HOST CONTROLLER */
 class RoomHost {
-  constructor(peer,code){
-    this.peer=peer;this.code=code;this.clients=new Map();this.nextSeat=1;
-    this.state={mode:gameMode,noAi:noAi,df:selDf,players:[{id:'host',name:myName||'Nurullah',seat:0,isHost:true,score:0,corr:0,strikes:0,qi:0,hold:0,answered:false,exp:false,alive:true}]};
-    this.roundWinner=null;
-    peer.on('connection',c=>this.handleConn(c));
-    this.hb=setInterval(()=>this.heartbeat(),2000);
-  }
-  broadcast(msg){
-    const s=JSON.stringify(msg);
-    this.clients.forEach(cl=>{if(cl.conn&&cl.conn.open)try{cl.conn.send(s)}catch(e){}});
-  }
-  handleConn(c){
-    if(this.clients.size>=7){c.on('open',()=>{c.send(JSON.stringify({t:'full'}));setTimeout(()=>c.close(),500)});return}
-    const peerId=c.peer;
-    c.on('data',raw=>{
-      let d;try{d=typeof raw==='string'?JSON.parse(raw):raw}catch(e){return}
-      this.onClientMsg(peerId,c,d);
-    });
-    c.on('close',()=>this.dropClient(peerId));
-    c.on('error',()=>this.dropClient(peerId));
-  }
-  dropClient(peerId){
-    if(!this.clients.has(peerId))return;
-    const cl=this.clients.get(peerId);
-    this.clients.delete(peerId);
-    this.state.players=this.state.players.filter(p=>p.id!==peerId);
-    this.broadcast({t:'lobby_sync',state:this.state});
-    if(st==='lobby')renderLobby();else updateHudChips();
-    if(st==='play')this.checkRoundCompletion();
-  }
-  onClientMsg(peerId,conn,d){
-    if(d.t==='join'){
-      const seat=this.nextSeat++;
-      const pl={id:peerId,name:d.name||('Oyuncu '+(seat+1)),seat:seat,isHost:false,score:0,corr:0,strikes:0,qi:0,hold:0,answered:false,exp:false,alive:true};
-      this.clients.set(peerId,{conn,player:pl,lastSeen:Date.now()});
-      this.state.players.push(pl);
-      conn.send(JSON.stringify({t:'welcome',seat,state:this.state}));
-      this.broadcast({t:'lobby_sync',state:this.state});
-      if(st==='lobby')renderLobby();else updateHudChips();
-    }
-    else if(d.t==='ans'){
-      const cl=this.clients.get(peerId);if(!cl)return;
-      if(st!=='play'||d.qi!==qi||roundResolved)return; // eski sorudan gelen geç cevap
-      const pl=cl.player;
-      pl.score=d.score;pl.corr=d.corr;pl.strikes=d.strikes;pl.answered=true;
-      if(d.correct){
-        tickMap[peerId]=Date.now()+1600;playCheckSound();
-        this.broadcast({t:'tick',id:peerId,qi:d.qi});
+  constructor(client, code) {
+    this.client = client;
+    this.code = code;
+    this.clients = new Map();
+    this.nextSeat = 1;
+    this.state = {
+      mode: gameMode,
+      noAi: noAi,
+      df: selDf,
+      players: [{
+        id: 'host',
+        name: myName || 'Nurullah',
+        seat: 0,
+        isHost: true,
+        score: 0,
+        corr: 0,
+        strikes: 0,
+        qi: 0,
+        hold: 0,
+        answered: false,
+        exp: false,
+        alive: true
+      }]
+    };
+    this.roundWinner = null;
+    this.topicHost = 'nsinav/v3/' + code + '/host';
+    this.topicAll = 'nsinav/v3/' + code + '/all';
+    this.topicGuest = (id) => 'nsinav/v3/' + code + '/guest/' + id;
+
+    client.onMessageArrived = (m) => this.onMessage(m.destinationName, m.payloadString);
+    client.onConnectionLost = (e) => {
+      if (!e || e.errorCode === 0) return;
+      console.warn('Host connection lost:', e);
+      if (st === 'lobby' || st === 'play') {
+        setTimeout(() => {
+          if (this.client && (!this.client.isConnected || !this.client.isConnected())) {
+            this.client.connect({
+              useSSL: true, timeout: 4, keepAliveInterval: 30, cleanSession: false,
+              onSuccess: () => {
+                this.client.subscribe(this.topicHost);
+                this.client.subscribe(this.topicAll);
+              }
+            });
+          }
+        }, 1000);
       }
-      this.broadcast({t:'p_state',id:peerId,score:d.score,corr:d.corr,strikes:d.strikes,answered:true});
+    };
+    this.hb = setInterval(() => this.heartbeat(), 2000);
+  }
+
+  init() {
+    return new Promise((resolve) => {
+      let count = 0;
+      const done = () => { if (++count === 2) resolve(); };
+      this.client.subscribe(this.topicHost, { qos: 1, onSuccess: done, onFailure: done });
+      this.client.subscribe(this.topicAll, { qos: 1, onSuccess: done, onFailure: done });
+      setTimeout(resolve, 800);
+    });
+  }
+
+  broadcast(msg) {
+    sendMqtt(this.client, this.topicAll, msg);
+  }
+
+  onMessage(topic, payload) {
+    let d;
+    try { d = JSON.parse(payload); } catch(e) { return; }
+    if (!topic.endsWith('/host')) return;
+
+    const peerId = d.from;
+    if (!peerId) return;
+
+    if (d.t === 'join') {
+      if (this.clients.has(peerId)) {
+        const existing = this.clients.get(peerId).player;
+        sendMqtt(this.client, this.topicGuest(peerId), { t: 'welcome', seat: existing.seat, state: this.state });
+        this.broadcast({ t: 'lobby_sync', state: this.state });
+        return;
+      }
+      if (this.state.players.length >= 8) {
+        sendMqtt(this.client, this.topicGuest(peerId), { t: 'full' });
+        return;
+      }
+      const seat = this.nextSeat++;
+      const pl = {
+        id: peerId,
+        name: d.name || ('Oyuncu ' + (seat + 1)),
+        seat: seat,
+        isHost: false,
+        score: 0,
+        corr: 0,
+        strikes: 0,
+        qi: 0,
+        hold: 0,
+        answered: false,
+        exp: false,
+        alive: true
+      };
+      this.clients.set(peerId, { player: pl, lastSeen: Date.now() });
+      this.state.players.push(pl);
+      sendMqtt(this.client, this.topicGuest(peerId), { t: 'welcome', seat: seat, state: this.state });
+      this.broadcast({ t: 'lobby_sync', state: this.state });
+      if (st === 'lobby') renderLobby(); else updateHudChips();
+    }
+    else if (d.t === 'ans') {
+      const cl = this.clients.get(peerId); if (!cl) return;
+      if (st !== 'play' || d.qi !== qi || roundResolved) return;
+      const pl = cl.player;
+      pl.score = d.score; pl.corr = d.corr; pl.strikes = d.strikes; pl.answered = true;
+      if (d.correct) {
+        tickMap[peerId] = Date.now() + 1600; playCheckSound();
+        this.broadcast({ t: 'tick', id: peerId, qi: d.qi });
+      }
+      this.broadcast({ t: 'p_state', id: peerId, score: d.score, corr: d.corr, strikes: d.strikes, answered: true });
       updateHudChips();
       this.checkRoundCompletion();
     }
-    else if(d.t==='buzz'){
-      if(this.state.mode!=='first'||this.roundWinner||roundResolved||st!=='play'||d.qi!==qi)return;
-      const cl=this.clients.get(peerId);if(!cl)return;
-      const pl=cl.player;
-      pl.answered=true;
-      if(d.correct){
-        this.roundWinner=pl;
-        pl.score+=20;pl.corr++;tickMap[peerId]=Date.now()+1600;
-        this.broadcast({t:'buzz_win',winnerId:peerId,winnerName:pl.name,correctOpt:cur.ci,points:20});
-        onFirstWinnerAnnounced(pl.name,peerId,cur.ci,20);
-      }else{
-        pl.score=Math.max(0,pl.score-5);
-        this.broadcast({t:'p_state',id:peerId,score:pl.score,corr:pl.corr,strikes:pl.strikes,buzzLocked:true});
+    else if (d.t === 'buzz') {
+      if (this.state.mode !== 'first' || this.roundWinner || roundResolved || st !== 'play' || d.qi !== qi) return;
+      const cl = this.clients.get(peerId); if (!cl) return;
+      const pl = cl.player;
+      pl.answered = true;
+      if (d.correct) {
+        this.roundWinner = pl;
+        pl.score += 20; pl.corr++; tickMap[peerId] = Date.now() + 1600;
+        this.broadcast({ t: 'buzz_win', winnerId: peerId, winnerName: pl.name, correctOpt: cur.ci, points: 20 });
+        onFirstWinnerAnnounced(pl.name, peerId, cur.ci, 20);
+      } else {
+        pl.score = Math.max(0, pl.score - 5);
+        this.broadcast({ t: 'p_state', id: peerId, score: pl.score, corr: pl.corr, strikes: pl.strikes, buzzLocked: true });
         this.checkRoundCompletion();
       }
       updateHudChips();
     }
-    else if(d.t==='hold'){
-      const cl=this.clients.get(peerId);if(!cl)return;
-      cl.player.hold=d.hold?1:0;
-      this.broadcast({t:'hold_sync',id:peerId,hold:cl.player.hold});
+    else if (d.t === 'hold') {
+      const cl = this.clients.get(peerId); if (!cl) return;
+      cl.player.hold = d.hold ? 1 : 0;
+      this.broadcast({ t: 'hold_sync', id: peerId, hold: cl.player.hold });
     }
-    else if(d.t==='caught'){
-      const cl=this.clients.get(peerId);if(!cl)return;
-      cl.player.strikes=d.strikes;if(d.strikes>=3){cl.player.exp=true;cl.player.hold=0}
-      this.broadcast({t:'p_state',id:peerId,strikes:d.strikes,exp:cl.player.exp,hold:cl.player.hold});
+    else if (d.t === 'caught') {
+      const cl = this.clients.get(peerId); if (!cl) return;
+      cl.player.strikes = d.strikes;
+      if (d.strikes >= 3) { cl.player.exp = true; cl.player.hold = 0; }
+      this.broadcast({ t: 'p_state', id: peerId, strikes: d.strikes, exp: cl.player.exp, hold: cl.player.hold });
       updateHudChips();
-      if(st==='play')this.checkRoundCompletion();
+      if (st === 'play') this.checkRoundCompletion();
+    }
+    else if (d.t === 'leave') {
+      this.dropClient(peerId);
     }
   }
-  checkRoundCompletion(){
-    if(roundResolved||st!=='play')return;
-    if(this.state.mode==='first'&&this.roundWinner)return;
-    const active=this.state.players.filter(p=>!p.exp);
-    // Normal: herkes cevap verdiyse; Önce Bilen: kimse bilemeden herkes yanlış yaptıysa
-    if(active.every(p=>p.answered))this.resolveRound();
+
+  dropClient(peerId) {
+    if (!this.clients.has(peerId)) return;
+    this.clients.delete(peerId);
+    this.state.players = this.state.players.filter(p => p.id !== peerId);
+    this.broadcast({ t: 'lobby_sync', state: this.state });
+    if (st === 'lobby') renderLobby(); else updateHudChips();
+    if (st === 'play') this.checkRoundCompletion();
   }
-  resolveRound(){
-    if(roundResolved)return;
-    roundResolved=true;
-    this.broadcast({t:'round_reveal',correctOpt:cur.ci});
+
+  checkRoundCompletion() {
+    if (roundResolved || st !== 'play') return;
+    if (this.state.mode === 'first' && this.roundWinner) return;
+    const active = this.state.players.filter(p => !p.exp);
+    if (active.every(p => p.answered)) this.resolveRound();
+  }
+
+  resolveRound() {
+    if (roundResolved) return;
+    roundResolved = true;
+    this.broadcast({ t: 'round_reveal', correctOpt: cur.ci });
     onRoundRevealed(cur.ci);
   }
-  nextQuestion(){
-    roundResolved=false;this.roundWinner=null;
-    this.state.players.forEach(p=>p.answered=false);
-    this.heartbeat(); // güncel puanlar, son sorudan sonraki sıralama için de gerekli
-    this.broadcast({t:'next_q',qi:qi+1});
-    qi++;nextQ();
+
+  nextQuestion() {
+    roundResolved = false; this.roundWinner = null;
+    this.state.players.forEach(p => p.answered = false);
+    this.heartbeat();
+    this.broadcast({ t: 'next_q', qi: qi + 1 });
+    qi++; nextQ();
   }
-  syncSelf(){
-    const me=this.state.players[0];
-    me.name=myName||'Nurullah';me.score=score;me.corr=corr;me.strikes=strikes;me.hold=hold?1:0;me.exp=out;
+
+  syncSelf() {
+    const me = this.state.players[0];
+    me.name = myName || 'Nurullah'; me.score = score; me.corr = corr; me.strikes = strikes; me.hold = hold ? 1 : 0; me.exp = out;
   }
-  heartbeat(){
+
+  heartbeat() {
     this.syncSelf();
-    this.broadcast({t:'hb',players:this.state.players});
+    this.broadcast({ t: 'hb', players: this.state.players });
   }
-  destroy(){
+
+  destroy() {
     clearInterval(this.hb);
-    this.broadcast({t:'host_left'});
-    this.clients.forEach(cl=>{try{cl.conn.close()}catch(e){}});
+    try { this.broadcast({ t: 'host_left' }); } catch(e) {}
     this.clients.clear();
-    try{this.peer.destroy()}catch(e){}
+    try { this.client.disconnect(); } catch(e) {}
   }
 }
 
 /* CLIENT CONTROLLER */
 class RoomClient {
-  constructor(peer,conn){
-    this.peer=peer;this.conn=conn;this.players=[];
-    conn.on('data',raw=>{
-      let d;try{d=typeof raw==='string'?JSON.parse(raw):raw}catch(e){return}
-      this.onHostMsg(d);
-    });
-    conn.on('close',()=>{
-      if(st!=='menu')duelMenu('Kurucu ayrıldı veya bağlantı koptu.');
-      leave();
+  constructor(client, code, id) {
+    this.client = client;
+    this.code = code;
+    this.id = id;
+    this.peer = { id: id };
+    this.players = [];
+    this.topicAll = 'nsinav/v3/' + code + '/all';
+    this.topicGuest = 'nsinav/v3/' + code + '/guest/' + id;
+    this.topicHost = 'nsinav/v3/' + code + '/host';
+
+    client.onMessageArrived = (m) => this.onMessage(m.destinationName, m.payloadString);
+    client.onConnectionLost = (e) => {
+      if (!e || e.errorCode === 0) return;
+      console.warn('Guest connection lost:', e);
+      if (st !== 'menu') {
+        duelMenu('Bağlantı koptu. Tekrar katılabilirsin.');
+        leave();
+      }
+    };
+  }
+
+  init() {
+    return new Promise((resolve) => {
+      let count = 0;
+      const done = () => { if (++count === 2) resolve(); };
+      this.client.subscribe(this.topicAll, { qos: 1, onSuccess: done, onFailure: done });
+      this.client.subscribe(this.topicGuest, { qos: 1, onSuccess: done, onFailure: done });
+      setTimeout(resolve, 800);
     });
   }
-  send(msg){if(this.conn&&this.conn.open)try{this.conn.send(JSON.stringify(msg))}catch(e){}}
-  onHostMsg(d){
-    if(d.t==='welcome'){
-      mySeat=d.seat;gameMode=d.state.mode;noAi=d.state.noAi;selDf=d.state.df;
-      this.players=d.state.players;
-      st='lobby';renderLobby();
+
+  send(msg) {
+    sendMqtt(this.client, this.topicHost, Object.assign({ from: this.id }, msg));
+  }
+
+  onWelcome(d) {
+    mySeat = d.seat;
+    gameMode = d.state.mode;
+    noAi = d.state.noAi;
+    selDf = d.state.df;
+    this.players = d.state.players;
+    st = 'lobby';
+    renderLobby();
+  }
+
+  onMessage(topic, payload) {
+    let d;
+    try { d = JSON.parse(payload); } catch(e) { return; }
+
+    if (d.t === 'welcome') {
+      this.onWelcome(d);
     }
-    else if(d.t==='lobby_sync'){
-      gameMode=d.state.mode;noAi=d.state.noAi;selDf=d.state.df;
-      this.players=d.state.players;
-      if(st==='lobby')renderLobby();else updateHudChips();
+    else if (d.t === 'full') {
+      duelMenu('Oda dolu (Maksimum 8 oyuncu).');
+      leave();
     }
-    else if(d.t==='game_start'){
-      gameMode=d.mode;noAi=d.noAi;selDf=d.sel;
-      startLocal(d.df,d.seed);
-      if(d.sel===RND)showBanner('🎲 Rastgele zorluk: '+D[d.df].n,2200);
+    else if (d.t === 'lobby_sync') {
+      gameMode = d.state.mode;
+      noAi = d.state.noAi;
+      selDf = d.state.df;
+      this.players = d.state.players;
+      if (st === 'lobby') renderLobby(); else updateHudChips();
     }
-    else if(d.t==='tick'){
-      tickMap[d.id]=Date.now()+1600;playCheckSound();
+    else if (d.t === 'game_start') {
+      gameMode = d.mode;
+      noAi = d.noAi;
+      selDf = d.sel;
+      startLocal(d.df, d.seed);
+      if (d.sel === RND) showBanner('🎲 Rastgele zorluk: ' + D[d.df].n, 2200);
+    }
+    else if (d.t === 'tick') {
+      tickMap[d.id] = Date.now() + 1600;
+      playCheckSound();
       updateHudChips();
     }
-    else if(d.t==='p_state'){
-      const p=this.players.find(x=>x.id===d.id);
-      if(p){Object.assign(p,d)}
+    else if (d.t === 'p_state') {
+      const p = this.players.find(x => x.id === d.id);
+      if (p) { Object.assign(p, d); }
       updateHudChips();
     }
-    else if(d.t==='hold_sync'){
-      const p=this.players.find(x=>x.id===d.id);
-      if(p)p.hold=d.hold;
+    else if (d.t === 'hold_sync') {
+      const p = this.players.find(x => x.id === d.id);
+      if (p) p.hold = d.hold;
     }
-    else if(d.t==='buzz_win'){
-      onFirstWinnerAnnounced(d.winnerName,d.winnerId,d.correctOpt,d.points);
+    else if (d.t === 'buzz_win') {
+      onFirstWinnerAnnounced(d.winnerName, d.winnerId, d.correctOpt, d.points);
     }
-    else if(d.t==='round_reveal'){
+    else if (d.t === 'round_reveal') {
       onRoundRevealed(d.correctOpt);
     }
-    else if(d.t==='next_q'){
-      roundResolved=false;qi=d.qi;nextQ();
+    else if (d.t === 'next_q') {
+      roundResolved = false;
+      qi = d.qi;
+      nextQ();
     }
-    else if(d.t==='hb'){
-      this.players=d.players;
+    else if (d.t === 'hb') {
+      this.players = d.players;
       updateHudChips();
     }
-    else if(d.t==='host_left'){
+    else if (d.t === 'host_left') {
       duelMenu('Kurucu odadan ayrıldı.');
       leave();
     }
   }
-  destroy(){
-    try{this.conn.close()}catch(e){}
-    try{this.peer.destroy()}catch(e){}
+
+  destroy() {
+    try { this.send({ t: 'leave' }); } catch(e) {}
+    try { this.client.disconnect(); } catch(e) {}
   }
 }
 
@@ -491,39 +705,59 @@ const newCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let k='';for(let i
 
 async function startHostConnect(){
   const d=$('ds');d.style.color='#8fd3ff';d.textContent='Oda kuruluyor…';
-  const tok=++cTok;let P;
-  try{P=await loadPeer()}catch(e){if(tok!==cTok)return;return duelMenu('P2P bileşeni yüklenemedi. İnternetini kontrol et.')}
-  const code=newCode();const id=PID+code.toLowerCase();
-  let peer;
-  try{peer=await openPeer(P,id)}catch(e){if(tok!==cTok)return;if(e&&e.type==='unavailable-id')return startHostConnect();return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
-  if(tok!==cTok){try{peer.destroy()}catch(e){}return}
-  
+  const tok=++cTok;
+  try{await loadMqtt()}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı bileşeni yüklenemedi. İnternetini kontrol et.')}
+  const code=newCode();
+  const hostId='ns_h_'+code+'_'+Math.random().toString(36).slice(2,6);
+  let client;
+  try{client=await connectMqtt(hostId)}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
+  if(tok!==cTok){try{client.disconnect()}catch(e){}return}
+
   myRole='host';isMp=true;myCode=code;mySeat=0;
-  mpHost=new RoomHost(peer,code);
+  mpHost=new RoomHost(client,code);
+  await mpHost.init();
   st='lobby';renderLobby();
 }
 
 async function startGuestConnect(code){
-  const d=$('ds');d.style.color='#8fd3ff';d.textContent='Odaya bağlanılıyor…';
-  const tok=++cTok;let P;
-  try{P=await loadPeer()}catch(e){if(tok!==cTok)return;return duelMenu('P2P bileşeni yüklenemedi. İnternetini kontrol et.')}
-  let peer;
-  try{peer=await openPeer(P)}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı açılamadı. Tekrar dene.')}
-  if(tok!==cTok){try{peer.destroy()}catch(e){}return}
-  
+  const d=$('ds');d.style.color='#8fd3ff';d.textContent='Sunucuya bağlanılıyor…';
+  const tok=++cTok;
+  try{await loadMqtt()}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı bileşeni yüklenemedi. İnternetini kontrol et.')}
+  const guestId='ns_g_'+Math.random().toString(36).slice(2,8);
+  let client;
+  try{client=await connectMqtt(guestId)}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
+  if(tok!==cTok){try{client.disconnect()}catch(e){}return}
+
   d.textContent='Oda aranıyor…';
-  const hostId=PID+code.toLowerCase();
-  const conn=peer.connect(hostId,{reliable:true});
-  let done=false;
-  const to=setTimeout(()=>{if(!done){done=true;try{conn.close()}catch(e){}try{peer.destroy()}catch(e){}duelMenu('Oda bulunamadı veya süre aşımı.')}},14000);
-  
-  conn.on('open',()=>{
-    if(done)return;done=true;clearTimeout(to);
-    myRole='guest';isMp=true;myCode=code;
-    mpClient=new RoomClient(peer,conn);
-    mpClient.send({t:'join',name:myName});
-  });
-  conn.on('error',e=>{if(!done){done=true;clearTimeout(to);duelMenu('Bağlantı hatası: '+(e||'hata'))}});
+  myRole='guest';isMp=true;myCode=code;
+  mpClient=new RoomClient(client,code,guestId);
+  await mpClient.init();
+
+  let joined=false;
+  mpClient.send({t:'join',name:myName||'Nurullah'});
+
+  const retryInterval=setInterval(()=>{
+    if(joined||tok!==cTok){clearInterval(retryInterval);return}
+    mpClient.send({t:'join',name:myName||'Nurullah'});
+  },1200);
+
+  const to=setTimeout(()=>{
+    clearInterval(retryInterval);
+    if(!joined){
+      joined=true;
+      leave();
+      duelMenu('❌ “'+code+'” kodlu oda bulunamadı veya kurucu ayrılmış.');
+    }
+  },4500);
+
+  const origOnWelcome=mpClient.onWelcome.bind(mpClient);
+  mpClient.onWelcome=(data)=>{
+    if(joined)return;
+    joined=true;
+    clearTimeout(to);
+    clearInterval(retryInterval);
+    origOnWelcome(data);
+  };
 }
 
 function renderLobby(){
@@ -773,7 +1007,7 @@ function answer(k){
 
 function onFirstWinnerAnnounced(winnerName,winnerId,correctOpt,pts){
   locked=true;
-  const isMe=(myRole==='host'&&winnerId==='host')||(myRole==='guest'&&mpClient&&winnerId===mpClient.peer.id);
+  const isMe=(myRole==='host'&&winnerId==='host')||(myRole==='guest'&&mpClient&&(winnerId===mpClient.id||(mpClient.peer&&winnerId===mpClient.peer.id)));
   const bs=$('op').children;
   if(bs[correctOpt])bs[correctOpt].classList.add('ok');
   
@@ -1102,10 +1336,22 @@ ab.addEventListener('contextmenu',e=>e.preventDefault());
 menu();
 requestAnimationFrame(loop);
 
-/* PWA Service Worker & iOS Install Guide */
+/* PWA Service Worker & Auto Update */
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.onupdatefound = () => {
+        const installing = reg.installing;
+        if (installing) {
+          installing.onstatechange = () => {
+            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+              showBanner('⚡ Yeni sürüm yüklendi! Yenileniyor...', 1500);
+              setTimeout(() => window.location.reload(), 1200);
+            }
+          };
+        }
+      };
+    }).catch(()=>{});
   });
 }
 const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
