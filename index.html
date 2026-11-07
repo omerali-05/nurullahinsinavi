@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Nurullah’ın Sınavı</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nurullah">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#0d0d1a;--bx:#171a33;--ln:#f5d76e;--tx:#f4f4f4}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--tx);font-family:'VT323','Courier New',monospace;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
+#app{position:relative;height:100%;max-width:540px;margin:0 auto;padding:6px 8px;display:flex;flex-direction:column;gap:5px}
+#hud{display:flex;justify-content:space-between;align-items:center;font-size:22px;color:var(--ln);min-height:26px}
+#opp-bar{display:none;display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+#opp-bar::-webkit-scrollbar{display:none}
+.p-chip{display:inline-flex;align-items:center;gap:4px;background:#171a33;border:1px solid #55597f;border-radius:3px;padding:2px 6px;font-size:16px;white-space:nowrap}
+.p-chip.me{border-color:var(--ln);background:#22264a}
+.p-chip.tick{border-color:#4ade80;animation:pulse 0.4s infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+canvas{width:100%;aspect-ratio:16/9;image-rendering:pixelated;border:3px solid var(--ln);background:#000;flex:none}
+#tb{height:8px;background:#222;border:2px solid var(--ln);flex:none}
+#tf{display:block;height:100%;width:100%;background:#4ade80;transition:background 0.2s}
+#banner{display:none;font-size:20px;text-align:center;padding:4px;background:#f59e0b;color:#0d0d1a;font-weight:bold;border:2px solid #fff;border-radius:4px;animation:sh .3s}
+#qb{font-size:25px;line-height:1.1;text-align:center;min-height:36px;flex:none;display:flex;align-items:center;justify-content:center}
+#op{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:none}
+#op button{font:inherit;font-size:21px;line-height:1;min-height:50px;background:var(--bx);color:var(--tx);border:3px solid #55597f;padding:4px;cursor:pointer}
+#op button:active{background:#2b3060}
+#op .ok{background:#1f7a3a !important;border-color:#4ade80 !important;color:#fff !important}
+#op .no{background:#8a2230 !important;border-color:#ff6b6b !important;color:#fff !important}
+#op .ai::before{content:"🤖 "}
+#op .locked{opacity:0.6;pointer-events:none}
+#aim{font-size:19px;min-height:22px;text-align:center;color:#8fd3ff;flex:none}
+#aim.bad{color:#ff6b6b}
+#ai{font:inherit;font-size:24px;min-height:56px;margin-top:auto;color:#fff;border:3px solid var(--ln);background:linear-gradient(90deg,#3a8dde var(--p,0%),#1c2b4a var(--p,0%));touch-action:none;cursor:pointer;flex:none}
+#ov{position:absolute;inset:0;background:rgba(13,13,26,.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;overflow-y:auto}
+#ov h1{font-size:36px;margin:0;color:var(--ln);line-height:1}
+#ov p{font-size:20px;margin:0;line-height:1.15}
+#ov button{font:inherit;font-size:24px;width:100%;max-width:340px;padding:8px 12px;background:var(--bx);color:var(--ln);border:3px solid var(--ln);cursor:pointer;touch-action:manipulation}
+#ov button:active{background:var(--ln);color:var(--bg)}
+#ov button.sel{background:var(--ln);color:var(--bg);font-weight:bold}
+#ov input{font:inherit;font-size:26px;width:100%;max-width:340px;text-align:center;padding:6px;background:#0d0d1a;color:#fff;border:3px solid #55597f}
+.sh{animation:sh .35s}@keyframes sh{25%{transform:translate(-6px,3px)}50%{transform:translate(6px,-3px)}75%{transform:translate(-4px,-2px)}}
+.row{display:flex;gap:6px;width:100%;max-width:340px}
+.row button{flex:1;font-size:20px;padding:6px 2px}
+.lb-table{width:100%;max-width:360px;border-collapse:collapse;margin:6px 0;font-size:20px}
+.lb-table td{padding:4px 6px;border-bottom:1px solid #333}
+.lb-table tr:first-child td{color:#4ade80;font-size:22px;font-weight:bold}
+#ios-tip{display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:92%;max-width:480px;background:#171a33;border:2px solid var(--ln);color:#fff;border-radius:10px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,0.8);z-index:9999;font-size:18px;line-height:1.25}
+#ios-tip .tip-title{color:var(--ln);font-weight:bold;font-size:20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+#ios-tip .tip-close{cursor:pointer;background:none;border:none;color:#ff6b6b;font-size:22px;font-family:inherit;padding:0 4px}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="hud"><span id="hl"></span><span id="hq"></span><span id="hs"></span></div>
+ <div id="opp-bar"></div>
+ <canvas id="c" width="160" height="90"></canvas>
+ <div id="tb"><i id="tf"></i></div>
+ <div id="banner"></div>
+ <div id="qb"></div>
+ <div id="op"></div>
+ <div id="aim"></div>
+ <button id="ai">🤖 BASILI TUT: YZ’ye bak</button>
+ <div id="ov"></div>
+ <div id="ios-tip">
+  <div class="tip-title">
+   <span>📲 Uygulama Olarak Oyna</span>
+   <button class="tip-close" onclick="$('ios-tip').style.display='none'">✕</button>
+  </div>
+  <div>Alttaki <strong>Paylaş</strong> (<span style="font-size:20px">⎋</span>) simgesine basıp <strong>"Ana Ekrana Ekle"</strong> dersen tam ekran mobil uygulama olarak oynayabilirsin!</div>
+ </div>
+</div>
+<script>
+const $=i=>document.getElementById(i),cv=$('c'),ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+
+/* ===== PIXEL FONT ENGINE (TÜRKÇE DESTEKLİ, BLURSUZ VE NET) ===== */
+const PFG = {
+  'A':[0x2,0x5,0x7,0x5,0x5], 'B':[0x6,0x5,0x6,0x5,0x6], 'C':[0x3,0x4,0x4,0x4,0x3],
+  'Ç':[0x3,0x4,0x4,0x4,0x3,0x2], 'D':[0x6,0x5,0x5,0x5,0x6], 'E':[0x7,0x4,0x6,0x4,0x7],
+  'F':[0x7,0x4,0x6,0x4,0x4], 'G':[0x3,0x4,0x5,0x5,0x3], 'Ğ':[0x5,0x3,0x4,0x5,0x5,0x3],
+  'H':[0x5,0x5,0x7,0x5,0x5], 'I':[0x1,0x1,0x1,0x1,0x1], 'İ':[0x1,0x0,0x1,0x1,0x1,0x1],
+  'J':[0x1,0x1,0x1,0x5,0x2], 'K':[0x5,0x5,0x6,0x5,0x5], 'L':[0x4,0x4,0x4,0x4,0x7],
+  'M':[0x11,0x1b,0x15,0x11,0x11], 'N':[0x9,0xd,0xb,0x9,0x9], 'O':[0x2,0x5,0x5,0x5,0x2],
+  'Ö':[0x5,0x2,0x5,0x5,0x5,0x2], 'P':[0x6,0x5,0x6,0x4,0x4], 'R':[0x6,0x5,0x6,0x5,0x5],
+  'S':[0x3,0x4,0x2,0x1,0x6], 'Ş':[0x3,0x4,0x2,0x1,0x6,0x2], 'T':[0x7,0x2,0x2,0x2,0x2],
+  'U':[0x5,0x5,0x5,0x5,0x3], 'Ü':[0x5,0x0,0x5,0x5,0x5,0x3], 'V':[0x5,0x5,0x5,0x2,0x2],
+  'Y':[0x5,0x5,0x2,0x2,0x2], 'Z':[0x7,0x1,0x2,0x4,0x7],
+  'Q':[0x2,0x5,0x5,0x6,0x3], 'W':[0x11,0x11,0x15,0x1b,0x11], 'X':[0x5,0x5,0x2,0x5,0x5],
+  '0':[0x2,0x5,0x5,0x5,0x2], '1':[0x2,0x6,0x2,0x2,0x7], '2':[0x6,0x1,0x2,0x4,0x7],
+  '3':[0x6,0x1,0x2,0x1,0x6], '4':[0x5,0x5,0x7,0x1,0x1], '5':[0x7,0x4,0x6,0x1,0x6],
+  '6':[0x3,0x4,0x6,0x5,0x2], '7':[0x7,0x1,0x2,0x2,0x2], '8':[0x2,0x5,0x2,0x5,0x2],
+  '9':[0x2,0x5,0x3,0x1,0x6], ' ':[0x0,0x0,0x0,0x0,0x0], '-': [0x0,0x0,0x7,0x0,0x0],
+  '.':[0x0,0x0,0x0,0x0,0x1], '!':[0x1,0x1,0x1,0x0,0x1], '?':[0x6,0x1,0x2,0x0,0x2]
+};
+function gw(c){if(c==='M'||c==='W')return 5;if(c==='N')return 4;if(c==='I'||c==='İ'||c==='.'||c==='!')return 1;if(c===' ')return 2;return 3}
+const trUp=s=>String(s).replace(/i/g,'İ').replace(/ı/g,'I').toUpperCase();
+function strW(s){let w=0,u=trUp(s);for(let i=0;i<u.length;i++){w+=gw(u[i]);if(i<u.length-1)w+=1}return w}
+function drawPix(s,x,y,col,sc){
+ sc=sc||1;
+ const u=trUp(s);
+ ctx.fillStyle=col||'#fff';let cx=0;x=Math.round(x);y=Math.round(y);
+ for(let i=0;i<u.length;i++){
+  const ch=u[i],g=PFG[ch]||PFG['?'],w=gw(ch);
+  const yOff=ch==='Ü'?-2:(ch==='Ğ'||ch==='Ö'||ch==='İ')?-1:0;
+  for(let r=0;r<g.length;r++){
+   const b=g[r];
+   for(let k=0;k<w;k++){
+    if(b&(1<<(w-1-k))) ctx.fillRect(x+(cx+k)*sc,y+(yOff+r)*sc,sc,sc);
+   }
+  }
+  cx+=w+1;
+ }
+}
+
+/* 7x7 Bold Pixel Checkmark */
+const CHK_BITS=[0x02,0x06,0x4c,0x6c,0x38,0x10]; // 7 wide
+function drawCheckmark(cx,cy,scale){
+ const sc=scale||1;ctx.fillStyle='#4ade80';
+ for(let r=0;r<6;r++){
+  const b=CHK_BITS[r];
+  for(let k=0;k<7;k++){
+   if(b&(1<<(6-k))){
+    ctx.fillRect(Math.round(cx+(k-3)*sc),Math.round(cy+(r-3)*sc),sc,sc);
+   }
+  }
+ }
+}
+
+/* SPRITES */
+const SP=["....HHHH....","...HHHHHH...","...HSSSSH...","...SESSES...","...SSSSSS...","....SSSS....","..TTTTTTTT..",".STTTTTTTTS.",".STTTTTTTTS.",".SSTTTTTTSS.","...PPPPPP...","...PPPPPP...","...PP..PP...","...PP..PP...","..BBB..BBB.."];
+const PRC={H:'#bbb',S:'#e0b080',E:'#111',T:'#444',P:'#222',B:'#000'};
+const hair=['#222','#6b4423','#c9a227','#a33'],shirt=['#4a7','#59c','#c8a','#ca4','#888'];
+const stu=j=>({H:hair[j%4],S:j%3?'#f1c27d':'#c68642',E:'#111',T:shirt[j%5],P:'#334',B:'#222'});
+function R(c,x,y,w,h){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
+function spr(x,y,s,p){SP.forEach((r,j)=>{for(let i=0;i<12;i++){if(r[i]!=='.')R(p[r[i]],x+i*s,y+j*s,s,s)}})}
+function T(t,x,y,c,z){ctx.fillStyle=c;ctx.font=(z||12)+'px VT323,monospace';ctx.fillText(t,x,y)}
+
+/* SORULAR (Fizik Mühendisliği) */
+const QE=[["Kuvvetin SI birimi?","Newton","Joule","Watt","Pascal"],["Enerjinin SI birimi?","Joule","Newton","Watt","Volt"],["Gücün SI birimi?","Watt","Joule","Amper","Henry"],["F = m·a ifadesinde a nedir?","İvme","Alan","Açı","Genlik"],["Yer çekimi ivmesi yaklaşık?","9,8 m/s²","1,6 m/s²","3,7 m/s²","98 m/s²"],["Hız–zaman grafiğinin eğimi?","İvme","Yer değiştirme","Kuvvet","Güç"],["Elektrik akımının birimi?","Amper","Volt","Ohm","Farad"],["Direncin birimi?","Ohm","Volt","Amper","Weber"],["Ohm yasası?","V = I·R","V = I/R","V = R/I","P = V + I"],["Işık hangi dalga türüdür?","Elektromanyetik","Boyuna mekanik","Ses","Gravitasyon"],["Frekansın birimi?","Hertz","Saniye","Metre","Joule"],["Kinetik enerji formülü?","½mv²","mv²","mgh","m·a"],["Yerçekimi potansiyel enerjisi?","mgh","½mv²","F·t","m/a"],["Momentum formülü?","p = m·v","p = m·a","p = F·d","p = m/v"],["Basıncın SI birimi?","Pascal","Newton","Joule","Watt"],["Işık hızı yaklaşık?","3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁵ m/s"],["Mutlak sıfır kaç Kelvin?","0 K","−273 K","273 K","100 K"],["Ses boşlukta yayılır mı?","Hayır","Evet","Sadece düşük frekansta","Sadece gece"],["Elektronun yükü?","Negatif","Pozitif","Nötr","Değişken"],["İş formülü (paralel)?","W = F·d","W = F/d","W = m·v","W = P/t"],["1 litre kaç m³?","10⁻³ m³","10⁻² m³","10⁻⁶ m³","1 m³"],["Seri bağlı dirençlerde eşdeğer direnç?","R₁ + R₂ + …","1/R₁ + 1/R₂","R₁·R₂","R₁ − R₂"],["Newton’un 3. yasası?","Etki–tepki","Eylemsizlik","F = ma","Kütle çekimi"],["Proton ve nötron nerede bulunur?","Çekirdekte","Elektron bulutunda","Yörüngede","Atomun dışında"],["Güç = ?","İş / zaman","İş × zaman","Kuvvet × zaman","Enerji × hız"],["Kapasitansın birimi?","Farad","Henry","Tesla","Weber"],["Manyetik alan şiddetinin (B) SI birimi?","Tesla","Henry","Farad","Siemens"],["Dalga boyu × frekans = ?","Dalga hızı","Genlik","Periyot","Enerji"]];
+const QM=[["Coulomb kuvveti mesafeyle nasıl değişir?","1/r²","1/r","r²","r"],["Kondansatörde depolanan enerji?","½CV²","CV²","½C/V²","CV"],["İki R direnci paralel bağlanırsa eşdeğeri?","R/2","2R","R²","R"],["Snell yasası?","n₁ sinθ₁ = n₂ sinθ₂","n₁ cosθ₁ = n₂ cosθ₂","n₁ tanθ₁ = n₂ tanθ₂","n₁ θ₁ = n₂ θ₂"],["Termodinamiğin 1. yasası neyi ifade eder?","Enerjinin korunumu","Entropi artar","Mutlak sıfıra ulaşılamaz","Isı soğuktan sıcağa akmaz"],["2. yasayla ilişkili büyüklük?","Entropi","Momentum","Yük","Spin"],["İdeal gaz denklemi?","PV = nRT","P = nRTV","PT = nRV","P/V = nRT"],["Basit sarkaç periyodu T = ?","2π√(L/g)","2π√(g/L)","π√(L/g)","2πL/g"],["Yay–kütle sisteminde ω = ?","√(k/m)","√(m/k)","k/m","mk"],["Merkezcil ivme?","v²/r","v·r","r/v²","v/r²"],["Maxwell: ∇·B = ?","0","ρ/ε₀","μ₀J","∂E/∂t"],["Faraday yasası neyi anlatır?","Değişen manyetik akı emk indükler","Yük korunur","Akım ısı üretir","Işık kırılır"],["Lorentz kuvvetinin manyetik kısmı?","q v × B","q E","m a","B²/2μ₀"],["Bohr atomunda enerji seviyeleri n ile?","−1/n²","−n","−n²","1/n"],["Foton enerjisi?","E = hf","E = mc","E = hλ","E = f/h"],["de Broglie dalga boyu?","λ = h/p","λ = hp","λ = p/h","λ = h·m"],["Fotoelektrik olayı kim açıkladı?","Einstein","Maxwell","Newton","Faraday"],["Yarı ömür nedir?","Çekirdeklerin yarısının bozunma süresi","Tümünün bozunma süresi","Kütlenin ikiye katlanma süresi","Işık hızına ulaşma süresi"],["Karnot verimi?","1 − Tsoğuk/Tsıcak","Tsoğuk/Tsıcak","1 + Tsoğuk/Tsıcak","Tsıcak − Tsoğuk"],["Açısal momentum L = ?","r × p","r · p","p/r","m·v²"],["Dolu diskin eylemsizlik momenti?","½mR²","mR²","⅖mR²","⅓mR²"],["Kaçış hızı?","√(2GM/R)","√(GM/R)","2GM/R","√(GM/2R)"],["Gazın yaptığı iş?","∫P dV","∫V dP","P/V","T dS"],["Elektrik için Gauss yasası?","∮E·dA = Q/ε₀","∮E·dl = 0","∮B·dA = Q","∮B·dl = 0"],["Ampère yasası?","∮B·dl = μ₀I","∮E·dl = I","∮B·dA = μ₀I","∮E·dA = μ₀I"],["Hooke yasası?","F = −kx","F = kx²","F = −k/x","F = m·x"],["Sinüs dalganın RMS değeri (tepe A)?","A/√2","A/2","A√2","A/π"],["LC devresinin rezonans frekansı?","1/(2π√(LC))","2π√(LC)","1/√(LC)","√(LC)/2π"],["Elektrik alanın birimi?","V/m","A/m","N·m","J/s"],["Kaynak yaklaşırken Doppler etkisiyle frekans?","Artar","Azalır","Değişmez","Sıfırlanır"],["3×3 birim matrisin determinantı?","1","0","3","9"]];
+const QH=[["Zamandan bağımsız Schrödinger denklemi?","Ĥψ = Eψ","Ĥ = ψE","Eψ = ħ","ψ² = E"],["Hidrojen temel durum enerjisi?","−13,6 eV","−3,4 eV","−1,51 eV","+13,6 eV"],["Pauli dışarlama ilkesi?","Aynı kuantum durumunda iki fermiyon olamaz","Aynı yerde iki foton olamaz","Enerji korunur","Konum ve momentum aynı anda bilinemez"],["Kuantum harmonik osilatör enerjileri?","(n + ½)ħω","nħω","n²ħω","(n + 1)²ħω"],["[x̂, p̂] komütatörü?","iħ","ħ","0","−ħ"],["Hangisi spin-½ parçacıktır?","Elektron","Foton","Pion","Higgs"],["Boltzmann dağılımında olasılık ~?","e^(−E/kT)","e^(E/kT)","E/kT","1/E"],["Planck ışıma yasası hangi sorunu çözdü?","Morötesi felaket","Fotoelektrik olay","Compton saçılması","Brown hareketi"],["Bose–Einstein yoğuşması hangi parçacıklarla?","Bozonlar","Fermiyonlar","Kuarklar","Nötrinolar"],["Bragg yasası?","nλ = 2d sinθ","λ = d sinθ","nλ = d cosθ","2λ = nd"],["Silisyumun band aralığı yaklaşık?","1,1 eV","0,1 eV","5 eV","3,4 eV"],["n tipi yarı iletken için katkı atomu?","Fosfor","Bor","Alüminyum","Galyum"],["Fermi enerjisi neyi tanımlar?","0 K’de dolu en yüksek seviyeyi","Isı kapasitesini","Işık hızını","Çekirdek bağ enerjisini"],["Lorentz faktörü γ = ?","1/√(1 − v²/c²)","√(1 − v²/c²)","1 − v²/c²","1/(1 − v/c)"],["E² = (pc)² + (?)²","mc²","mc","m²c","m/c²"],["Schwarzschild yarıçapı?","2GM/c²","GM/c²","2GM/c","GMc²"],["EM dalganın boşluktaki hızı?","1/√(μ₀ε₀)","√(μ₀ε₀)","μ₀/ε₀","μ₀ε₀"],["Poynting vektörü neyi verir?","Enerji akısı","Manyetik akı","Yük yoğunluğu","Potansiyel"],["Fourier dönüşümü hangi alanlar arasında çevirir?","Zaman–frekans","Konum–hız","Yük–akım","Isı–basınç"],["∇²f nedir?","İkinci kısmi türevlerin toplamı","Birinci türevlerin çarpımı","Rotasyonel","Gradyan"],["∇ × (∇f) = ?","0","∇²f","f","∇f"],["∫ e^(−x²) dx (−∞’dan ∞’a) = ?","√π","π","1","2π"],["∫ δ(x) dx = ?","1","0","∞","−1"],["Belirsizlik ilkesi: Δx·Δp ≥ ?","ħ/2","ħ","h","2ħ"],["Compton saçılması neyi gösterir?","Fotonun parçacık doğasını","Elektronun dalga doğasını","Çekirdek bozunmasını","Işığın kırılmasını"],["Güneş’te temel füzyon tepkimesi?","Hidrojen → Helyum","Uranyum bölünmesi","Karbon → Demir","Helyum → Uranyum"],["Radyoaktif bozunma: N(t) = ?","N₀e^(−λt)","N₀e^(λt)","N₀/λt","N₀λt"],["f serbestlik dereceli ideal gazın iç enerjisi?","(f/2)NkT","fNkT","NkT/f","2fNkT"],["Helmholtz serbest enerjisi F = ?","U − TS","U + TS","H − TS","U − PV"],["Gibbs serbest enerjisi G = ?","H − TS","U − TS","H + TS","U − PV"],["Lagrange fonksiyonu L = ?","T − V","T + V","V − T","T·V"],["Hamiltoniyen genelde?","T + V","T − V","T·V","T/V"],["Euler–Lagrange denklemi?","d/dt(∂L/∂q̇) − ∂L/∂q = 0","∂L/∂q = q̇","L = q·q̇","∂L/∂t = 0"]];
+
+const MIX=[[.7,.3,0],[.15,.65,.2],[0,.3,.7]];
+const D=[{n:'Kolay',sp:18,wr:1.1,wd:1.2,gp:[4,7],ai:1,acc:.9,qt:15,nq:10},{n:'Orta',sp:26,wr:.8,wd:1.4,gp:[3,5],ai:1.4,acc:.75,qt:14,nq:12},{n:'Zor',sp:36,wr:.5,wd:1.6,gp:[2,3.5],ai:1.8,acc:.6,qt:12,nq:15}];
+const CAUGHT=["Hoca: {n}! O telefon ne?","Hoca: {n}, kopya mı çekiyorsun?!","Hoca: Telefonu kaldır {n}!","Hoca: {n}, seni görüyorum!"];
+const WRONG=["YZ çok emindi… ama yanlıştı.","Yapay zeka hayal görüyor {n}!","YZ: “Pardon {n}, yanılmışım.”"];
+const GR=[[90,'AA','{n} efsane oldu! Hoca bile şüphelenmedi.'],[80,'BA','Muhteşem kopya ustası {n}!'],[70,'BB','Fena değil {n}, burs gitmez.'],[60,'CB','Geçtin {n}, nefes al.'],[50,'CC','Kıl payı! Bir sonraki dönem görüşürüz.'],[40,'DD','Şartlı geçtin… duayla.'],[0,'FF','{n} kaldı. Belki de çalışmak lazımdı?']];
+/* Mesajlarda oyuncunun kendi adı kullanılır */
+const pName=()=>myName||'Nurullah';
+const say=(t)=>String(t).replace(/\{n\}/g,pName());
+const pick=a=>say(a[(Math.random()*a.length)|0]);
+/* Rastgele zorluk: -1 = her oyunda Kolay/Orta/Zor'dan biri rastgele seçilir */
+const RND=-1;
+const dfName=i=>i===RND?'🎲 Rastgele':D[i].n;
+const resolveDf=i=>i===RND?((Math.random()*D.length)|0):i;
+
+/* PLAYER COLORS (Up to 8 players) */
+const PCOLORS = [
+  { n: 'Kırmızı', hex: '#e04a4a', light: '#ff8080' },
+  { n: 'Mavi',    hex: '#3a8dde', light: '#8fd3ff' },
+  { n: 'Yeşil',   hex: '#22c55e', light: '#86efac' },
+  { n: 'Sarı',    hex: '#eab308', light: '#fde047' },
+  { n: 'Mor',     hex: '#a855f7', light: '#d8b4fe' },
+  { n: 'Turuncu', hex: '#f97316', light: '#fdba74' },
+  { n: 'Camgöbeği',hex: '#06b6d4', light: '#67e8f9' },
+  { n: 'Pembe',   hex: '#ec4899', light: '#f472b6' }
+];
+
+/* GAME STATES */
+let df=1,qs=[],qi=0,score=0,corr=0,strikes=0,streak=0,tl=0,st='menu',locked=true,hold=false,blk=false,got=false,ap=0,flash=0,cur=null,pr={x:20,d:1,s:'walk',t:3},ac=null,mt=0,sound=true;
+let noAi=false,gameMode='normal'; // 'normal' | 'first' ("Önce Bilen Kazanır")
+let selDf=1,soloSel=1; // Seçilen zorluk (RND olabilir); df = oyunda gerçekten oynanan zorluk
+let out=false; // Çok oyunculuda sınıftan atıldıysa: oyunu izler
+let tickMap={}; // Diğer oyuncuların kafasındaki tik (yerel saatle)
+let myCx=80; // Kendi karakterimin canvas üzerindeki x merkezi (hoca yakınlık kontrolü için)
+let myTickUntil=0; // Checkmark over local player
+let hasAnsweredThisQ=false;
+let roundResolved=false;
+let bannerTimer=null;
+
+/* AUDIO */
+function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
+function tn(f,d,ty,v,w){const a=au();if(!a||!sound)return;try{const o=a.createOscillator(),g=a.createGain(),s=a.currentTime+(w||0);o.type=ty||'square';o.frequency.value=f;g.gain.setValueAtTime(v||.05,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(a.destination);o.start(s);o.stop(s+d)}catch(e){}}
+function playCheckSound(){tn(987,.08,'sine',.06);tn(1318,.15,'triangle',.07,.05)}
+function showBanner(text,dur){const b=$('banner');b.textContent=text;b.style.display='block';clearTimeout(bannerTimer);bannerTimer=setTimeout(()=>{b.style.display='none'},dur||1800)}
+function msg(t,bad){const m=$('aim');if(noAi){m.textContent='';return}m.textContent=t;m.className=bad?'bad':'';clearTimeout(mt);if(bad)mt=setTimeout(()=>{if(m.className==='bad')m.textContent=''},2000)}
+
+const best=i=>{try{return+localStorage.getItem('nb'+i)||0}catch(e){return 0}};
+const mb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* =========================================================
+   P2P MULTIPLAYER ENGINE (2-8 OYUNCU, STAR TOPOLOGY / WebRTC)
+   ========================================================= */
+const PID='nurullah-sinavi-v2-';
+let peerLib=null,cTok=0,isMp=false,myRole='solo',myCode='',myName='',mySeat=0,mpHost=null,mpClient=null;
+try{myName=localStorage.getItem('nname')||''}catch(e){}
+const gn=()=>{const e=$('nm');const v=e?e.value.trim().slice(0,10):myName;myName=v;try{localStorage.setItem('nname',v)}catch(x){}return v};
+
+function loadPeer(){if(window.Peer)return Promise.resolve(window.Peer);if(peerLib)return peerLib;
+ const srcs=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
+ peerLib=new Promise((res,rej)=>{let i=0;const nx=()=>{if(i>=srcs.length){peerLib=null;return rej(new Error('lib'))}const s=document.createElement('script');s.src=srcs[i++];s.onload=()=>window.Peer?res(window.Peer):nx();s.onerror=()=>{s.remove();nx()};document.head.appendChild(s)};nx()});return peerLib}
+function openPeer(P,id){return new Promise((res,rej)=>{let done=false;const p=id?new P(id,{debug:0}):new P({debug:0});
+ const to=setTimeout(()=>{if(!done){done=true;try{p.destroy()}catch(e){}rej({type:'timeout'})}},15000);
+ p.on('open',()=>{if(!done){done=true;clearTimeout(to);res(p)}});
+ p.on('error',e=>{if(!done){done=true;clearTimeout(to);try{p.destroy()}catch(x){}rej(e)}})})}
+
+/* HOST CONTROLLER */
+class RoomHost {
+  constructor(peer,code){
+    this.peer=peer;this.code=code;this.clients=new Map();this.nextSeat=1;
+    this.state={mode:gameMode,noAi:noAi,df:selDf,players:[{id:'host',name:myName||'Nurullah',seat:0,isHost:true,score:0,corr:0,strikes:0,qi:0,hold:0,answered:false,exp:false,alive:true}]};
+    this.roundWinner=null;
+    peer.on('connection',c=>this.handleConn(c));
+    this.hb=setInterval(()=>this.heartbeat(),2000);
+  }
+  broadcast(msg){
+    const s=JSON.stringify(msg);
+    this.clients.forEach(cl=>{if(cl.conn&&cl.conn.open)try{cl.conn.send(s)}catch(e){}});
+  }
+  handleConn(c){
+    if(this.clients.size>=7){c.on('open',()=>{c.send(JSON.stringify({t:'full'}));setTimeout(()=>c.close(),500)});return}
+    const peerId=c.peer;
+    c.on('data',raw=>{
+      let d;try{d=typeof raw==='string'?JSON.parse(raw):raw}catch(e){return}
+      this.onClientMsg(peerId,c,d);
+    });
+    c.on('close',()=>this.dropClient(peerId));
+    c.on('error',()=>this.dropClient(peerId));
+  }
+  dropClient(peerId){
+    if(!this.clients.has(peerId))return;
+    const cl=this.clients.get(peerId);
+    this.clients.delete(peerId);
+    this.state.players=this.state.players.filter(p=>p.id!==peerId);
+    this.broadcast({t:'lobby_sync',state:this.state});
+    if(st==='lobby')renderLobby();else updateHudChips();
+    if(st==='play')this.checkRoundCompletion();
+  }
+  onClientMsg(peerId,conn,d){
+    if(d.t==='join'){
+      const seat=this.nextSeat++;
+      const pl={id:peerId,name:d.name||('Oyuncu '+(seat+1)),seat:seat,isHost:false,score:0,corr:0,strikes:0,qi:0,hold:0,answered:false,exp:false,alive:true};
+      this.clients.set(peerId,{conn,player:pl,lastSeen:Date.now()});
+      this.state.players.push(pl);
+      conn.send(JSON.stringify({t:'welcome',seat,state:this.state}));
+      this.broadcast({t:'lobby_sync',state:this.state});
+      if(st==='lobby')renderLobby();else updateHudChips();
+    }
+    else if(d.t==='ans'){
+      const cl=this.clients.get(peerId);if(!cl)return;
+      if(st!=='play'||d.qi!==qi||roundResolved)return; // eski sorudan gelen geç cevap
+      const pl=cl.player;
+      pl.score=d.score;pl.corr=d.corr;pl.strikes=d.strikes;pl.answered=true;
+      if(d.correct){
+        tickMap[peerId]=Date.now()+1600;playCheckSound();
+        this.broadcast({t:'tick',id:peerId,qi:d.qi});
+      }
+      this.broadcast({t:'p_state',id:peerId,score:d.score,corr:d.corr,strikes:d.strikes,answered:true});
+      updateHudChips();
+      this.checkRoundCompletion();
+    }
+    else if(d.t==='buzz'){
+      if(this.state.mode!=='first'||this.roundWinner||roundResolved||st!=='play'||d.qi!==qi)return;
+      const cl=this.clients.get(peerId);if(!cl)return;
+      const pl=cl.player;
+      pl.answered=true;
+      if(d.correct){
+        this.roundWinner=pl;
+        pl.score+=20;pl.corr++;tickMap[peerId]=Date.now()+1600;
+        this.broadcast({t:'buzz_win',winnerId:peerId,winnerName:pl.name,correctOpt:cur.ci,points:20});
+        onFirstWinnerAnnounced(pl.name,peerId,cur.ci,20);
+      }else{
+        pl.score=Math.max(0,pl.score-5);
+        this.broadcast({t:'p_state',id:peerId,score:pl.score,corr:pl.corr,strikes:pl.strikes,buzzLocked:true});
+        this.checkRoundCompletion();
+      }
+      updateHudChips();
+    }
+    else if(d.t==='hold'){
+      const cl=this.clients.get(peerId);if(!cl)return;
+      cl.player.hold=d.hold?1:0;
+      this.broadcast({t:'hold_sync',id:peerId,hold:cl.player.hold});
+    }
+    else if(d.t==='caught'){
+      const cl=this.clients.get(peerId);if(!cl)return;
+      cl.player.strikes=d.strikes;if(d.strikes>=3){cl.player.exp=true;cl.player.hold=0}
+      this.broadcast({t:'p_state',id:peerId,strikes:d.strikes,exp:cl.player.exp,hold:cl.player.hold});
+      updateHudChips();
+      if(st==='play')this.checkRoundCompletion();
+    }
+  }
+  checkRoundCompletion(){
+    if(roundResolved||st!=='play')return;
+    if(this.state.mode==='first'&&this.roundWinner)return;
+    const active=this.state.players.filter(p=>!p.exp);
+    // Normal: herkes cevap verdiyse; Önce Bilen: kimse bilemeden herkes yanlış yaptıysa
+    if(active.every(p=>p.answered))this.resolveRound();
+  }
+  resolveRound(){
+    if(roundResolved)return;
+    roundResolved=true;
+    this.broadcast({t:'round_reveal',correctOpt:cur.ci});
+    onRoundRevealed(cur.ci);
+  }
+  nextQuestion(){
+    roundResolved=false;this.roundWinner=null;
+    this.state.players.forEach(p=>p.answered=false);
+    this.heartbeat(); // güncel puanlar, son sorudan sonraki sıralama için de gerekli
+    this.broadcast({t:'next_q',qi:qi+1});
+    qi++;nextQ();
+  }
+  syncSelf(){
+    const me=this.state.players[0];
+    me.name=myName||'Nurullah';me.score=score;me.corr=corr;me.strikes=strikes;me.hold=hold?1:0;me.exp=out;
+  }
+  heartbeat(){
+    this.syncSelf();
+    this.broadcast({t:'hb',players:this.state.players});
+  }
+  destroy(){
+    clearInterval(this.hb);
+    this.broadcast({t:'host_left'});
+    this.clients.forEach(cl=>{try{cl.conn.close()}catch(e){}});
+    this.clients.clear();
+    try{this.peer.destroy()}catch(e){}
+  }
+}
+
+/* CLIENT CONTROLLER */
+class RoomClient {
+  constructor(peer,conn){
+    this.peer=peer;this.conn=conn;this.players=[];
+    conn.on('data',raw=>{
+      let d;try{d=typeof raw==='string'?JSON.parse(raw):raw}catch(e){return}
+      this.onHostMsg(d);
+    });
+    conn.on('close',()=>{
+      if(st!=='menu')duelMenu('Kurucu ayrıldı veya bağlantı koptu.');
+      leave();
+    });
+  }
+  send(msg){if(this.conn&&this.conn.open)try{this.conn.send(JSON.stringify(msg))}catch(e){}}
+  onHostMsg(d){
+    if(d.t==='welcome'){
+      mySeat=d.seat;gameMode=d.state.mode;noAi=d.state.noAi;selDf=d.state.df;
+      this.players=d.state.players;
+      st='lobby';renderLobby();
+    }
+    else if(d.t==='lobby_sync'){
+      gameMode=d.state.mode;noAi=d.state.noAi;selDf=d.state.df;
+      this.players=d.state.players;
+      if(st==='lobby')renderLobby();else updateHudChips();
+    }
+    else if(d.t==='game_start'){
+      gameMode=d.mode;noAi=d.noAi;selDf=d.sel;
+      startLocal(d.df,d.seed);
+      if(d.sel===RND)showBanner('🎲 Rastgele zorluk: '+D[d.df].n,2200);
+    }
+    else if(d.t==='tick'){
+      tickMap[d.id]=Date.now()+1600;playCheckSound();
+      updateHudChips();
+    }
+    else if(d.t==='p_state'){
+      const p=this.players.find(x=>x.id===d.id);
+      if(p){Object.assign(p,d)}
+      updateHudChips();
+    }
+    else if(d.t==='hold_sync'){
+      const p=this.players.find(x=>x.id===d.id);
+      if(p)p.hold=d.hold;
+    }
+    else if(d.t==='buzz_win'){
+      onFirstWinnerAnnounced(d.winnerName,d.winnerId,d.correctOpt,d.points);
+    }
+    else if(d.t==='round_reveal'){
+      onRoundRevealed(d.correctOpt);
+    }
+    else if(d.t==='next_q'){
+      roundResolved=false;qi=d.qi;nextQ();
+    }
+    else if(d.t==='hb'){
+      this.players=d.players;
+      updateHudChips();
+    }
+    else if(d.t==='host_left'){
+      duelMenu('Kurucu odadan ayrıldı.');
+      leave();
+    }
+  }
+  destroy(){
+    try{this.conn.close()}catch(e){}
+    try{this.peer.destroy()}catch(e){}
+  }
+}
+
+function isMeP(p){return !isMp||(myRole==='host'&&p.id==='host')||(myRole==='guest'&&p.seat===mySeat)}
+function tickOf(p){return isMeP(p)?myTickUntil:(tickMap[p.id]||0)}
+function getPlayers(){
+  if(!isMp) return [{id:'me',name:myName||'Nurullah',seat:0,isHost:true,score,corr,strikes,hold:hold?1:0,exp:out}];
+  if(myRole==='host'){mpHost.syncSelf();return mpHost.state.players}
+  // Misafir: kendi kaydını yerel (en güncel) değerlerle göster
+  return (mpClient.players||[]).map(p=>p.seat===mySeat?Object.assign({},p,{name:myName||p.name,score,corr,strikes,hold:hold?1:0,exp:out||p.exp}):p);
+}
+
+function updateHudChips(){
+  const bar=$('opp-bar');
+  if(!isMp){bar.style.display='none';return}
+  bar.style.display='flex';
+  const players=getPlayers();
+  bar.innerHTML=players.map(p=>{
+    const isMe=isMeP(p);
+    const col=PCOLORS[p.seat%8];
+    const isTick=Date.now()<tickOf(p);
+    const lives='❤'.repeat(Math.max(0,3-(p.strikes||0)))+'🖤'.repeat(Math.min(3,p.strikes||0));
+    return `<div class="p-chip ${isMe?'me':''} ${isTick?'tick':''}" style="border-left:4px solid ${col.hex}">
+      <span>${p.isHost?'👑':'👤'} <b>${esc(p.name)}</b></span>
+      <span style="color:${col.hex}">${p.score||0}p</span>
+      <span style="font-size:13px">${p.exp?'❌':lives}</span>
+      ${isTick?'<span style="color:#4ade80">✔</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function leave(){
+  cTok++;
+  if(mpHost){mpHost.destroy();mpHost=null}
+  if(mpClient){mpClient.destroy();mpClient=null}
+  isMp=false;myRole='solo';st='menu';
+}
+
+/* =========================================================
+   MENÜ VE LOBİ EKRANLARI
+   ========================================================= */
+function menu(){
+  leave();st='menu';locked=true;const o=$('ov');o.style.display='flex';
+  o.innerHTML=`<h1>NURULLAH’IN SINAVI</h1>
+  <p>Fizik Mühendisliği · 90+ soru · Telefon elinde, hoca amfide!</p>
+  <p>Oyuncu adın:</p>
+  <input id='nm' maxlength='10' placeholder='Nurullah'>
+  <div style="font-size:18px;color:#8fd3ff;margin-top:2px">Tek Kişilik Sınav:</div>
+  <div class="row">
+   <button id="tog-ai" style="flex:1;font-size:19px;${noAi?'border-color:#ff6b6b;color:#ff6b6b':'border-color:#4ade80;color:#4ade80'}">${noAi?'🚫 YZ’SİZ (Saf Bilgi)':'🤖 YZ’Lİ (Kopyalı)'}</button>
+  </div>
+  ${D.map((d,i)=>`<button data-d='${i}'>${d.n} (${d.nq} Soru) · Rekor: ${best(i)}</button>`).join('')}
+  <button data-d='${RND}'>🎲 Rastgele Zorluk</button>
+  <button id='dl' style="background:#2b3060;color:#f5d76e">⚔️ ÇOK OYUNCULU MOD (2-8 Kişi)</button>
+  <button id='fsb' style='font-size:20px'>⛶ Tam ekran</button>`;
+  
+  $('nm').value=myName;
+  $('tog-ai').onclick=()=>{noAi=!noAi;menu()};
+  o.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{au();gn();startSolo(+b.dataset.d)});
+  $('dl').onclick=()=>{au();gn();duelMenu()};
+  $('fsb').onclick=toggleFullScreen;
+}
+
+function toggleFullScreen(){
+  const d=document,e=d.documentElement;
+  try{(d.fullscreenElement||d.webkitFullscreenElement)?(d.exitFullscreen||d.webkitExitFullscreen).call(d):(e.requestFullscreen||e.webkitRequestFullscreen).call(e)}catch(x){}
+}
+
+function duelMenu(msg){
+  st='menu';const o=$('ov');
+  o.innerHTML=`<h1>⚔️ ÇOK OYUNCULU</h1>
+  <p>Arkadaşlarınla aynı sınıfta canlı yarış (2 - 8 Oyuncu)</p>
+  <button id='gen' style="background:#1f7a3a;color:#fff;border-color:#4ade80">🎲 Yeni Oda Aç (Oda Kur)</button>
+  <p>veya arkadaşının 4 haneli oda kodunu gir:</p>
+  <input id='cd' maxlength='4' placeholder='KOD' style='text-transform:uppercase'>
+  <button id='jn'>Odaya Katıl</button>
+  <p id='ds' style='color:#ff6b6b;min-height:22px'>${msg||''}</p>
+  <button id='bk' style='font-size:20px'>← Ana Menü</button>`;
+  
+  $('gen').onclick=()=>startHostConnect();
+  $('jn').onclick=()=>{
+    const k=$('cd').value.trim().toUpperCase();
+    if(!/^[A-Z0-9]{4}$/.test(k))return duelMenu('4 haneli kodu gir!');
+    startGuestConnect(k);
+  };
+  $('bk').onclick=menu;
+}
+
+const newCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let k='';for(let i=0;i<4;i++)k+=c[Math.random()*c.length|0];return k};
+
+async function startHostConnect(){
+  const d=$('ds');d.style.color='#8fd3ff';d.textContent='Oda kuruluyor…';
+  const tok=++cTok;let P;
+  try{P=await loadPeer()}catch(e){if(tok!==cTok)return;return duelMenu('P2P bileşeni yüklenemedi. İnternetini kontrol et.')}
+  const code=newCode();const id=PID+code.toLowerCase();
+  let peer;
+  try{peer=await openPeer(P,id)}catch(e){if(tok!==cTok)return;if(e&&e.type==='unavailable-id')return startHostConnect();return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
+  if(tok!==cTok){try{peer.destroy()}catch(e){}return}
+  
+  myRole='host';isMp=true;myCode=code;mySeat=0;
+  mpHost=new RoomHost(peer,code);
+  st='lobby';renderLobby();
+}
+
+async function startGuestConnect(code){
+  const d=$('ds');d.style.color='#8fd3ff';d.textContent='Odaya bağlanılıyor…';
+  const tok=++cTok;let P;
+  try{P=await loadPeer()}catch(e){if(tok!==cTok)return;return duelMenu('P2P bileşeni yüklenemedi. İnternetini kontrol et.')}
+  let peer;
+  try{peer=await openPeer(P)}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı açılamadı. Tekrar dene.')}
+  if(tok!==cTok){try{peer.destroy()}catch(e){}return}
+  
+  d.textContent='Oda aranıyor…';
+  const hostId=PID+code.toLowerCase();
+  const conn=peer.connect(hostId,{reliable:true});
+  let done=false;
+  const to=setTimeout(()=>{if(!done){done=true;try{conn.close()}catch(e){}try{peer.destroy()}catch(e){}duelMenu('Oda bulunamadı veya süre aşımı.')}},14000);
+  
+  conn.on('open',()=>{
+    if(done)return;done=true;clearTimeout(to);
+    myRole='guest';isMp=true;myCode=code;
+    mpClient=new RoomClient(peer,conn);
+    mpClient.send({t:'join',name:myName});
+  });
+  conn.on('error',e=>{if(!done){done=true;clearTimeout(to);duelMenu('Bağlantı hatası: '+(e||'hata'))}});
+}
+
+function renderLobby(){
+  const o=$('ov');o.style.display='flex';
+  const isHost=myRole==='host';
+  const players=getPlayers();
+  
+  let h=`<h1>⚔️ SINIF LOBİSİ</h1>`;
+  if(isHost){
+    h+=`<p>Arkadaşlarına bu kodu ver:</p>
+    <div style='font-size:68px;color:#4ade80;letter-spacing:6px;line-height:1;margin:4px 0;font-weight:bold'>${myCode}</div>`;
+  }else{
+    h+=`<p>Oda Kodu: <b style="color:#4ade80;font-size:26px">${myCode}</b></p>`;
+  }
+  
+  h+=`<div style="background:#171a33;border:2px solid #55597f;border-radius:4px;padding:6px;width:100%;max-width:340px;text-align:left">
+    <div style="color:#f5d76e;font-size:20px;margin-bottom:4px">Öğrenciler (${players.length}/8):</div>
+    <div style="display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto">
+      ${players.map((p,idx)=>`<div style="display:flex;justify-content:space-between;color:${PCOLORS[p.seat%8].hex};font-size:20px">
+        <span>${p.isHost?'👑':'👤'} ${esc(p.name)} ${p.seat===mySeat?'<span style="color:#fff">(Sen)</span>':''}</span>
+        <span style="color:#8fd3ff">${idx===0?'Kurucu':'Hazır'}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  
+  if(isHost){
+    h+=`<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:5px;margin-top:2px">
+      <div style="font-size:18px;color:#8fd3ff">Zorluk:</div>
+      <div class="row">
+        ${D.map((d,i)=>`<button data-z='${i}' class="${i===selDf?'sel':''}">${d.n}</button>`).join('')}
+        <button data-z='${RND}' class="${selDf===RND?'sel':''}">🎲</button>
+      </div>
+      <div style="font-size:18px;color:#8fd3ff">Oyun Modu:</div>
+      <div class="row">
+        <button id="m-norm" class="${gameMode==='normal'?'sel':''}">🏆 Normal</button>
+        <button id="m-first" class="${gameMode==='first'?'sel':''}">⚡ Önce Bilen</button>
+      </div>
+      <div class="row">
+        <button id="m-ai" style="flex:1;font-size:18px;${noAi?'color:#ff6b6b;border-color:#ff6b6b':'color:#4ade80;border-color:#4ade80'}">${noAi?'🚫 YZ’SİZ MOD (Kopya Yok)':'🤖 YZ’Lİ MOD (Kopya Açık)'}</button>
+      </div>
+      <button id="go" style="background:#1f7a3a;color:#fff;border-color:#4ade80;font-size:28px;margin-top:4px">OYUNU BAŞLAT</button>
+    </div>`;
+  }else{
+    h+=`<div style="background:#171a33;border:1px solid #334;padding:6px;width:100%;max-width:340px;margin:4px 0">
+      <div>Zorluk: <b style="color:#f5d76e">${dfName(selDf)}</b></div>
+      <div>Mod: <b style="color:#4ade80">${gameMode==='first'?'⚡ Önce Bilen Kazanır':'🏆 Normal Sınav'}</b></div>
+      <div>YZ: <b style="color:${noAi?'#ff6b6b':'#4ade80'}">${noAi?'🚫 Kapalı (Saf Bilgi)':'🤖 Açık (Kopya Serbest)'}</b></div>
+      <p style="color:#8fd3ff;margin-top:6px">Kurucunun oyunu başlatması bekleniyor…</p>
+    </div>`;
+  }
+  
+  h+=`<button id='bk' style='font-size:20px;margin-top:2px'>← Ayrıl</button>`;
+  o.innerHTML=h;
+  
+  $('bk').onclick=menu;
+  if(isHost){
+    o.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{
+      selDf=+b.dataset.z;mpHost.state.df=selDf;mpHost.broadcast({t:'lobby_sync',state:mpHost.state});renderLobby();
+    });
+    $('m-norm').onclick=()=>{
+      gameMode='normal';mpHost.state.mode='normal';mpHost.broadcast({t:'lobby_sync',state:mpHost.state});renderLobby();
+    };
+    $('m-first').onclick=()=>{
+      gameMode='first';mpHost.state.mode='first';mpHost.broadcast({t:'lobby_sync',state:mpHost.state});renderLobby();
+    };
+    $('m-ai').onclick=()=>{
+      noAi=!noAi;mpHost.state.noAi=noAi;mpHost.broadcast({t:'lobby_sync',state:mpHost.state});renderLobby();
+    };
+    $('go').onclick=()=>{
+      au();hostLaunchGame();
+    };
+  }
+}
+
+function hostLaunchGame(){
+  const seed=(Math.random()*4294967296)|0;
+  const real=resolveDf(selDf);
+  // Yeni oyun: herkesin durumunu sıfırla
+  mpHost.roundWinner=null;
+  mpHost.state.players.forEach(p=>{p.score=0;p.corr=0;p.strikes=0;p.exp=false;p.answered=false;p.hold=0});
+  mpHost.broadcast({t:'game_start',seed,df:real,sel:selDf,noAi,mode:gameMode,rn:Date.now()});
+  startLocal(real,seed);
+  if(selDf===RND)showBanner('🎲 Rastgele zorluk: '+D[real].n,2200);
+}
+
+/* =========================================================
+   OYUN BAŞLATMA VE SORU AKIŞI
+   ========================================================= */
+function startSolo(i){
+  isMp=false;myRole='solo';gameMode='normal';soloSel=i;
+  const real=resolveDf(i);
+  startLocal(real);
+  if(i===RND)showBanner('🎲 Rastgele zorluk: '+D[real].n,2200);
+}
+
+function startLocal(i,seed){
+  df=i;const d=D[i];
+  const rnd=mb(seed||((Math.random()*4294967296)|0));
+  const sh=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=(rnd()*(k+1))|0;[a[k],a[j]]=[a[j],a[k]]}return a};
+  const mx=MIX[i],ne=Math.round(d.nq*mx[0]),nh=Math.round(d.nq*mx[2]),nm=d.nq-ne-nh;
+  qs=[...sh(QE).slice(0,ne),...sh(QM).slice(0,nm),...sh(QH).slice(0,nh)].map(q=>({q,o:sh([0,1,2,3])}));
+  
+  qi=0;score=0;corr=0;strikes=0;streak=0;out=false;tickMap={};lastHoldSent=0;
+  hold=false;blk=false;got=false;ap=0;flash=0;
+  pr={x:20,d:1,s:'walk',t:rg(d)};
+  myTickUntil=0;hasAnsweredThisQ=false;roundResolved=false;
+  
+  $('ov').style.display='none';
+  $('ai').style.display=noAi?'none':'block';
+  $('aim').style.display=noAi?'none':'block';
+  
+  updateHudChips();
+  st='play';nextQ();
+}
+
+const rg=d=>d.gp[0]+Math.random()*(d.gp[1]-d.gp[0]);
+
+function nextQ(){
+  if(qi>=qs.length)return endGame();
+  const qq=qs[qi],q=qq.q,o=qq.o;
+  cur={ci:o.indexOf(0),o};
+  
+  $('qb').textContent=q[0];
+  const op=$('op');op.innerHTML='';
+  o.forEach((k,idx)=>{
+    const b=document.createElement('button');
+    b.textContent=q[k+1];
+    b.onclick=()=>answer(idx);
+    op.appendChild(b);
+  });
+  
+  got=false;ap=0;locked=false;hasAnsweredThisQ=false;roundResolved=false;
+  if(out){
+    // Sınıftan atılan oyuncu sadece izler (süre yine işler ki oyun akışı bozulmasın)
+    hasAnsweredThisQ=true;hold=false;
+    for(const b of op.children)b.classList.add('locked');
+  }
+  tl=D[df].qt;
+  $('tf').style.width='100%';
+  $('tf').style.background='#4ade80';
+  $('ai').style.setProperty('--p','0%');
+  $('ai').textContent='🤖 BASILI TUT: YZ’ye bak';
+  msg(out?'🚪 Sınıftan atıldın — izliyorsun':'');
+  hud();
+  updateHudChips();
+}
+
+function hud(){
+  $('hl').textContent='❤'.repeat(Math.max(0,3-strikes))+'🖤'.repeat(Math.min(3,strikes));
+  $('hq').textContent='Soru '+(qi+1)+'/'+qs.length+(gameMode==='first'?' [⚡ HIZLI]':'');
+  $('hs').textContent='Puan '+score;
+}
+
+function answer(k){
+  if(locked||st!=='play'||hasAnsweredThisQ)return;
+  hold=false;syncHold();
+  const bs=$('op').children;
+  
+  if(isMp&&gameMode==='first'){
+    // "Önce Bilen Kazanır" Mode
+    if(k<0){
+      // Süre bitti: bu soruda şans kalmadı, sonucu kurucu açıklar
+      hasAnsweredThisQ=true;
+      for(let i=0;i<bs.length;i++)bs[i].classList.add('locked');
+      return;
+    }
+    if(k===cur.ci){
+      locked=true;hasAnsweredThisQ=true;
+      if(myRole==='host'){
+        mpHost.roundWinner=mpHost.state.players[0];
+        mpHost.state.players[0].answered=true;
+        score+=20;corr++;myTickUntil=Date.now()+1600;playCheckSound();
+        mpHost.broadcast({t:'buzz_win',winnerId:'host',winnerName:myName||'Nurullah',correctOpt:cur.ci,points:20});
+        onFirstWinnerAnnounced(myName||'Nurullah','host',cur.ci,20);
+      }else{
+        mpClient.send({t:'buzz',qi,correct:true});
+      }
+    }else{
+      // Wrong in first mode: locked for this question
+      score=Math.max(0,score-5);bs[k].classList.add('no');
+      tn(150,.3,'sawtooth',.06);
+      hasAnsweredThisQ=true;
+      for(let i=0;i<bs.length;i++)bs[i].classList.add('locked');
+      showBanner('❌ Yanlış! Diğerleri devam ediyor…',2000);
+      if(myRole==='host'){
+        mpHost.state.players[0].answered=true;
+        mpHost.broadcast({t:'p_state',id:'host',score,corr,strikes,buzzLocked:true});
+        mpHost.checkRoundCompletion();
+      }
+      else mpClient.send({t:'buzz',qi,correct:false});
+    }
+    hud();updateHudChips();
+    return;
+  }
+  
+  // Normal Mode
+  hasAnsweredThisQ=true;
+  if(k===cur.ci){
+    corr++;score+=10+Math.min(streak,5)*2;streak++;
+    myTickUntil=Date.now()+1600;
+    playCheckSound();
+    
+    // In multiplayer: do NOT highlight green yet, so other players cannot copy!
+    if(!isMp){
+      bs[cur.ci].classList.add('ok');
+    }else{
+      // Subtle local confirmation indicator on clicked button
+      bs[k].style.borderColor='#4ade80';
+      if(myRole==='host'){
+        mpHost.state.players[0].score=score;mpHost.state.players[0].corr=corr;
+        mpHost.state.players[0].answered=true;
+        mpHost.broadcast({t:'tick',id:'host',qi});
+        mpHost.checkRoundCompletion();
+      }else{
+        mpClient.send({t:'ans',qi,correct:true,score,corr,strikes});
+      }
+    }
+  }else{
+    if(k>=0)bs[k].classList.add('no');
+    score=Math.max(0,score-5);streak=0;
+    tn(150,.3,'sawtooth',.06);
+    if(k<0)msg('Süre bitti!',1);
+    else if(got&&cur.ap!==cur.ci&&k===cur.ap)msg(pick(WRONG),1);
+    
+    if(isMp){
+      if(myRole==='host'){
+        mpHost.state.players[0].score=score;mpHost.state.players[0].corr=corr;
+        mpHost.state.players[0].answered=true;
+        mpHost.broadcast({t:'p_state',id:'host',score,corr,strikes,answered:true});
+        mpHost.checkRoundCompletion();
+      }else{
+        mpClient.send({t:'ans',qi,correct:false,score,corr,strikes});
+      }
+    }
+  }
+  
+  // Lock buttons so player cannot press again this round
+  for(let i=0;i<bs.length;i++)bs[i].classList.add('locked');
+  
+  hud();updateHudChips();
+  
+  if(!isMp){
+    locked=true;
+    setTimeout(()=>{if(st==='play'){qi++;nextQ()}},1000);
+  }
+}
+
+function onFirstWinnerAnnounced(winnerName,winnerId,correctOpt,pts){
+  locked=true;
+  const isMe=(myRole==='host'&&winnerId==='host')||(myRole==='guest'&&mpClient&&winnerId===mpClient.peer.id);
+  const bs=$('op').children;
+  if(bs[correctOpt])bs[correctOpt].classList.add('ok');
+  
+  if(isMe){
+    if(myRole!=='host'){score+=pts;corr++;myTickUntil=Date.now()+1600;}
+    showBanner(`⚡ TEBRİKLER! Önce Sen Bildin! (+${pts} Puan)`,2000);
+    [523,659,784,1047].forEach((f,i)=>tn(f,.12,'square',.05,i*.08));
+  }else{
+    tickMap[winnerId]=Date.now()+1600;
+    showBanner(`⚡ ${winnerName} Önce Bildi! (+${pts} Puan)`,2000);
+    tn(440,.2,'triangle',.05);
+  }
+  
+  hud();updateHudChips();
+  if(myRole==='host'){
+    setTimeout(()=>{if(st==='play')mpHost.nextQuestion()},1600);
+  }
+}
+
+function onRoundRevealed(correctOpt){
+  locked=true;
+  const bs=$('op').children;
+  if(bs[correctOpt])bs[correctOpt].classList.add('ok');
+  
+  if(myRole==='host'){
+    setTimeout(()=>{if(st==='play')mpHost.nextQuestion()},1400);
+  }
+}
+
+function reveal(){
+  if(noAi)return;
+  got=true;hold=false;syncHold();
+  const w=[0,1,2,3].filter(i=>i!==cur.ci);
+  cur.ap=Math.random()<D[df].acc?cur.ci:w[(Math.random()*3)|0];
+  $('op').children[cur.ap].classList.add('ai');
+  $('ai').textContent='🤖 YZ cevap verdi';
+  msg('🤖 YZ: %99 eminim '+pName()+'! “'+$('op').children[cur.ap].textContent+'”');
+  tn(900,.08);tn(1200,.1,'square',.04,.08);
+}
+
+function caught(){
+  // Yakalanınca: 1 kalp gider, YZ ilerlemesi sıfırlanır. Butonu bırakıp
+  // tekrar basarak YZ'yi kullanmaya devam edebilirsin (atılana kadar).
+  strikes++;hold=false;blk=true;ap=0;flash=1;syncHold();
+  $('ai').style.setProperty('--p','0%');
+  pr.s='walk';pr.t=rg(D[df]);
+  cv.classList.remove('sh');void cv.offsetWidth;cv.classList.add('sh');
+  tn(110,.4,'sawtooth',.08);
+  msg(pick(CAUGHT),1);
+  hud();
+  
+  const expelled=strikes>=3;
+  if(isMp){
+    if(expelled){out=true;hasAnsweredThisQ=true;for(const b of $('op').children)b.classList.add('locked')}
+    if(myRole==='host'){
+      mpHost.state.players[0].strikes=strikes;
+      if(expelled){mpHost.state.players[0].exp=true}
+      mpHost.broadcast({t:'p_state',id:'host',strikes,exp:mpHost.state.players[0].exp,hold:0});
+      if(expelled)mpHost.checkRoundCompletion();
+    }else{
+      mpClient.send({t:'caught',strikes});
+    }
+    updateHudChips();
+    if(expelled){
+      // Çok oyunculuda atılan oyuncu oyunu izlemeye devam eder; sıralama sonda gösterilir
+      $('ai').style.display='none';
+      showBanner('🚪 Sınıftan atıldın! Sınav bitene kadar izliyorsun.',2600);
+    }
+    return;
+  }
+  
+  if(expelled)setTimeout(()=>endGame(true),600);
+}
+
+/* YZ butonuna basılı tutma durumunu diğer oyunculara bildir */
+let lastHoldSent=0;
+function syncHold(){
+  if(!isMp)return;
+  const h=hold?1:0;if(h===lastHoldSent)return;lastHoldSent=h;
+  if(myRole==='host')mpHost.broadcast({t:'hold_sync',id:'host',hold:h});
+  else if(mpClient)mpClient.send({t:'hold',hold:!!h});
+}
+
+function endGame(exp){
+  st='end';locked=true;hold=false;
+  const n=qs.length;
+  const isExp=!!exp||strikes>=3;
+  
+  if(!isMp){
+    const pc=isExp?0:(corr/n)*100;
+    const g=isExp?['','ATILDI',say('{n} amfiden atıldı. Hoca telefonu aldı.')]:GR.find(x=>pc>=x[0]);
+    const b=best(df);const nr=score>b&&!isExp;
+    if(nr){try{localStorage.setItem('nb'+df,score)}catch(e){}}
+    
+    if(!isExp&&pc>=50)[523,659,784,1047].forEach((f,i)=>tn(f,.16,'square',.05,i*.12));
+    else tn(130,.6,'sawtooth',.07);
+    
+    $('ov').style.display='flex';
+    $('ov').innerHTML=`<h1>${isExp?'SINIFTAN ATILDIN':'SINAV BİTTİ'}</h1>
+    <p style="font-size:60px;color:#ff6b6b;line-height:1">${g[1]}</p>
+    <p>${esc(say(g[2]))}</p>
+    <p>Doğru: ${corr}/${n} · Puan: ${score} (${D[df].n}${soloSel===RND?' 🎲':''}${noAi?' · YZ’siz':''})</p>
+    ${nr?'<p style="color:#4ade80">🏆 YENİ REKOR!</p>':''}
+    <button id="ra">Tekrar Oyna</button>
+    <button id="mn">Ana Menü</button>`;
+    $('ra').onclick=()=>{au();startSolo(soloSel)};
+    $('mn').onclick=menu;
+    return;
+  }
+  
+  // MULTIPLAYER END GAME LEADERBOARD
+  const players=[...getPlayers()].sort((a,b)=>(b.score||0)-(a.score||0));
+  const winner=players[0];
+  const isMeWinner=(myRole==='host'&&winner.id==='host')||(myRole==='guest'&&winner.seat===mySeat);
+  
+  if(isMeWinner)[523,659,784,1047].forEach((f,i)=>tn(f,.18,'square',.06,i*.1));
+  else tn(220,.5,'triangle',.05);
+  
+  $('ov').style.display='flex';
+  $('ov').innerHTML=`<h1>🏆 SINAV SIRALAMASI</h1>
+  <p style="color:#f5d76e;font-size:22px">${gameMode==='first'?'⚡ Önce Bilen':'🏆 Normal'} · ${D[df].n}${noAi?' · YZ’siz':''}</p>
+  <table class="lb-table">
+    ${players.map((p,idx)=>{
+      const medal=idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':(idx+1)+'.';
+      const isMe=(myRole==='host'&&p.id==='host')||(myRole==='guest'&&p.seat===mySeat);
+      return `<tr style="${isMe?'background:#1c2b4a':''}">
+        <td>${medal}</td>
+        <td style="color:${PCOLORS[p.seat%8].hex}">${esc(p.name)} ${isMe?'(Sen)':''}</td>
+        <td>${p.score||0} Puan</td>
+        <td style="font-size:16px">${p.exp?'❌ Atıldı':(p.corr||0)+'/'+n}</td>
+      </tr>`;
+    }).join('')}
+  </table>
+  ${isMeWinner?'<p style="color:#4ade80;font-size:28px">🏆 KAZANDIN! TEBRİKLER!</p>':`<p style="color:#8fd3ff;font-size:24px">${esc(winner.name)} Kazandı!</p>`}
+  ${myRole==='host'?'<button id="rm">⚔️ Yeni Oyun (Rövanş)</button>':''}
+  <button id="mn">Ana Menü</button>`;
+  
+  if($('rm'))$('rm').onclick=()=>{au();hostLaunchGame()};
+  $('mn').onclick=menu;
+}
+
+/* =========================================================
+   CANVAS ÇİZİMİ VE ANİMASYON DÖNGÜSÜ
+   ========================================================= */
+function upd(dt){
+  if(st!=='play')return;
+  const d=D[df];flash=Math.max(0,flash-dt*2);
+  
+  // Teacher walking logic
+  pr.t-=dt;
+  if(pr.s==='walk'){
+    pr.x+=pr.d*d.sp*dt;
+    if(pr.x>148||pr.x<12)pr.d*=-1;
+    if(pr.t<=0){pr.s='warn';pr.t=d.wr;tn(880,.1);tn(880,.1,'square',.05,.15)}
+  }else if(pr.s==='warn'&&pr.t<=0){
+    pr.s='watch';pr.t=d.wd;
+  }else if(pr.s==='watch'&&pr.t<=0){
+    pr.s='walk';pr.t=rg(d);
+  }
+  
+  // Timer countdown
+  if(!locked){
+    tl-=dt;
+    $('tf').style.width=Math.max(0,(tl/d.qt)*100)+'%';
+    $('tf').style.background=tl<3?'#ff6b6b':'#4ade80';
+    if(tl<=0){
+      answer(-1);
+      if(isMp&&myRole==='host')mpHost.resolveRound();
+    }
+  }
+  
+  // AI Cheat holding (yakalandıktan sonra da, atılana kadar kullanılabilir)
+  const canCheat=!noAi&&!out&&!locked&&!hasAnsweredThisQ;
+  if(hold&&!canCheat){hold=false;syncHold()}
+  if(canCheat&&hold&&!got){
+    ap+=dt/d.ai;
+    $('ai').style.setProperty('--p',Math.min(100,ap*100)+'%');
+    if(ap>=1)reveal();
+  }
+  
+  // Caught check: hoca bakarken ya da yanından geçerken telefona bakıyorsan
+  if(canCheat&&hold&&(pr.s==='watch'||(pr.s==='walk'&&Math.abs(pr.x-myCx)<20))){
+    caught();
+  }
+}
+
+function draw(t){
+  // Classroom Background
+  R('#2b2f4a',0,0,160,90);
+  R('#1d3b2f',30,4,100,14);
+  R('#6b4a2a',28,2,104,2);R('#6b4a2a',28,18,104,2);
+  // Kara tahta: net piksel yazıyla sadece "SINAV"
+  const bw=strW('SINAV')*2;
+  drawPix('SINAV',80-bw/2+1,7,'#0e2219',2); // hafif gölge
+  drawPix('SINAV',80-bw/2,6,'#e8f5ec',2);
+  R('#3a3a55',0,22,160,68);
+  
+  const players=getPlayers();
+  const numP=players.length;
+  
+  // Background NPC students (Row 1 at y=30)
+  for(let i=0;i<5;i++){
+    const x=8+i*30,y=30+Math.round(Math.sin(t/500+i*2)*.6);
+    spr(x,y,1,stu(i));
+    R('#6b4a2a',x-3,y+9,18,5);
+  }
+  
+  // Teacher
+  const w=pr.s==='warn',wt=pr.s==='watch';
+  if(wt){
+    ctx.fillStyle='rgba(255,60,60,.28)';
+    ctx.beginPath();ctx.moveTo(pr.x,36);ctx.lineTo(10,80);ctx.lineTo(150,80);ctx.fill();
+  }
+  spr(pr.x-12,20,2,PRC);
+  if(w)T('?',pr.x-3,17,'#ff5',18);
+  if(wt)T('!',pr.x-3,17,'#f44',18);
+  
+  // PLAYER SEATING POSITIONS
+  // Row 2 (Middle row y=38) for players 4-7
+  // Row 3 (Front row y=56) for players 0-3
+  players.forEach((p,idx)=>{
+    const isMe=isMeP(p);
+    const col=PCOLORS[p.seat%8];
+    const isBack=idx>=4;
+    
+    // Calculate desk X coordinate
+    let px=68;
+    const rowIdx=isBack?idx-4:idx;
+    const rowCount=isBack?Math.max(1,numP-4):Math.min(4,numP);
+    
+    if(rowCount===1) px=68;
+    else if(rowCount===2) px=rowIdx===0?36:100;
+    else if(rowCount===3) px=20+rowIdx*48;
+    else px=12+rowIdx*38;
+    
+    const py=isBack?38:56;
+    const scale=isBack?1:2;
+    const sprW=12*scale;
+    if(isMe)myCx=px+sprW/2;
+    
+    // Draw character sprite with assigned shirt color
+    const customPalette={H:hair[p.seat%4],S:'#f1c27d',E:'#111',T:col.hex,P:'#2f4b9c',B:'#222'};
+    spr(px,py,scale,customPalette);
+    
+    // Desk
+    const dW=isBack?22:36;
+    const dX=px+(sprW/2)-(dW/2);
+    R('#8a5a2b',dX,py+(scale===2?18:9),dW,scale===2?8:5);
+    R('#6d4720',dX,py+(scale===2?26:14),dW,2);
+    
+    // Phone glow if holding AI
+    const isHold=isMe?hold:(+p.hold===1);
+    if(!noAi&&isHold){
+      R('#6cf',px+(scale===2?18:9),py+(scale===2?15:7),scale===2?5:3,scale===2?4:2);
+      R('rgba(108,204,255,.35)',px+(scale===2?6:3),py+(scale===2?5:2),scale===2?15:8,scale===2?9:5);
+    }
+    
+    // PIXEL NAMEPLATE (SUPER CRISP AND READABLE)
+    const nameStr=p.name||('P'+(p.seat+1));
+    const nw=strW(nameStr);
+    const badgeW=nw+6;
+    const badgeH=10;
+    const badgeX=Math.round(px+(sprW/2)-(badgeW/2));
+    const badgeY=py-(scale===2?11:10);
+    
+    // Dark backdrop pill with colored border
+    R('rgba(10,12,24,0.94)',badgeX,badgeY,badgeW,badgeH);
+    // 1px border
+    const borderCol=isMe?'#f5d76e':col.hex;
+    ctx.fillStyle=borderCol;
+    ctx.fillRect(badgeX,badgeY,badgeW,1);
+    ctx.fillRect(badgeX,badgeY+badgeH-1,badgeW,1);
+    ctx.fillRect(badgeX,badgeY,1,badgeH);
+    ctx.fillRect(badgeX+badgeW-1,badgeY,1,badgeH);
+    
+    // Crisp pixel text
+    drawPix(nameStr,badgeX+3,badgeY+3,isMe?'#f5d76e':'#ffffff');
+    
+    // CHECKMARK OVER HEAD ("doğru bulanın kafasında tik yansın")
+    const tu=tickOf(p);
+    const isTick=Date.now()<tu;
+    if(isTick){
+      const bounce=Math.sin((tu-Date.now())/1600*Math.PI*3)*2;
+      const chkX=Math.round(px+(sprW/2));
+      const chkY=Math.round(badgeY-7+bounce);
+      
+      // Glow badge behind checkmark (keskin 1px yeşil çerçeve)
+      R('#22c55e',chkX-5,chkY-5,11,10);
+      R('#0d1a10',chkX-4,chkY-4,9,8);
+      drawCheckmark(chkX,chkY,1);
+    }else if(p.exp&&isMp){
+      // Sınıftan atılan oyuncunun kafasında kırmızı X
+      const xx=Math.round(px+(sprW/2)),yy=badgeY-6;
+      for(let i=0;i<5;i++){R('#ff4d4d',xx-2+i,yy+i,1,1);R('#ff4d4d',xx+2-i,yy+i,1,1)}
+    }
+  });
+  
+  if(flash>0)R('rgba(255,0,0,'+flash*.45+')',0,0,160,90);
+}
+
+let lastTime=0;
+function loop(t){
+  const dt=Math.min(.05,(t-lastTime)/1000);lastTime=t;
+  upd(dt);draw(t);
+  requestAnimationFrame(loop);
+}
+setInterval(()=>{if(isMp&&st==='play')updateHudChips()},600);
+
+/* AI BUTTON EVENTS
+   Not: blk, yakalandıktan sonra butonu BIRAKANA kadar yeniden basmayı engeller.
+   Bırakınca (hold durumundan bağımsız olarak) her zaman sıfırlanır; böylece
+   atılana kadar YZ'yi tekrar tekrar kullanabilirsin. */
+const ab=$('ai');
+ab.addEventListener('pointerdown',e=>{
+  e.preventDefault();au();
+  if(!noAi&&!out&&st==='play'&&!locked&&!got&&!blk&&!hasAnsweredThisQ){
+    hold=true;syncHold();
+  }
+});
+const release=()=>{blk=false;if(hold){hold=false;syncHold()}};
+['pointerup','pointercancel','pointerleave'].forEach(ev=>ab.addEventListener(ev,release));
+window.addEventListener('pointerup',release);
+window.addEventListener('blur',release);
+ab.addEventListener('contextmenu',e=>e.preventDefault());
+
+menu();
+requestAnimationFrame(loop);
+
+/* PWA Service Worker & iOS Install Guide */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+if(isIos && !isStandalone){
+  setTimeout(()=>{
+    const tip = $('ios-tip');
+    if(tip) tip.style.display = 'block';
+  }, 1200);
+}
+</script>
+</body>
+</html>
