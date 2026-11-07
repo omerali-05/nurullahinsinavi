@@ -1,30 +1,30 @@
 # 📱 Nurullah’ın Sınavı — Arkadaşlarına Gönderme ve Dağıtım Rehberi
 
-Bu proje, hem **iOS (iPhone/iPad)** hem de **Android** kullanıcıları için hiçbir kurulum zahmeti olmadan, tek bir link ile tıpkı App Store / Play Store'dan indirilmiş gibi tam ekran ve çevrimdışı oynanabilen bir **PWA (Progressive Web App)** haline getirilmiştir.
+Netlify'ın ekrana koyduğu o sinir bozucu toolbar/buton yerine **Vercel** kullanarak ekranı **%100 tertemiz, sıfır reklamsız ve tuşsuz** şekilde arkadaşlarına açıyoruz!
 
 ---
 
-## 🚀 1. Oyunu Canlıya Alma (30 Saniyede Ücretsiz Link Edinme)
+## 🚀 1. GitHub & Vercel ile 2 Dakikada Canlıya Alma
 
-Arkadaşlarına atabilmek için projeyi internette ücretsiz barındırabileceğin 3 pratik yol:
+### Adım 1: GitHub'da Yeni Repo Aç
+1. [github.com/new](https://github.com/new) adresine gir.
+2. Repository name kısmına: `nurullahinsinavi` yaz.
+3. **Public** seç ve **"Create repository"** butonuna bas.
 
-### Seçenek A: Vercel (En Kolayı & 30 Saniye)
-1. [vercel.com](https://vercel.com) adresine gir ve giriş yap.
-2. `nurullahinsinavi` klasörünü Vercel ekranına sürükleyip bırak (Drag & Drop) veya terminalden şu komutu çalıştır:
-   ```bash
-   npx vercel
-   ```
-3. Sana hemen `https://nurullah-sinavi.vercel.app` gibi anlık bir link verir!
+### Adım 2: Kodları Gönder (Terminalden Tek Seferlik)
+PowerShell veya terminali açıp şu iki komutu yapıştır:
+```bash
+cd "C:\Users\omera\Desktop\uygulama projelerim\nurullahinsinavi"
+git remote add origin https://github.com/omerali-05/nurullahinsinavi.git
+git push -u origin main
+```
 
-### Seçenek B: Netlify Drop (Sıfır Komut)
-1. [app.netlify.com/drop](https://app.netlify.com/drop) sayfasına git.
-2. `C:\Users\omera\Desktop\uygulama projelerim\nurullahinsinavi` klasörünü sayfadaki kutucuğa sürükle bırak.
-3. 5 saniye içinde canlı linkin hazır!
-
-### Seçenek C: GitHub Pages
-1. Projeyi bir GitHub reposuna push'la.
-2. GitHub'da `Settings > Pages` kısmına git.
-3. `Branch: main` seçip kaydet; `https://kullaniciadi.github.io/nurullahinsinavi/` linkin hazır.
+### Adım 3: Vercel'e Bağla (Sıfır Toolbar / %100 Temiz Ekran)
+1. [vercel.com](https://vercel.com) adresine girip GitHub hesabınla giriş yap.
+2. **"Add New..." > "Project"** tıkla.
+3. Listeden `nurullahinsinavi` reposunun yanındaki **"Import"** butonuna bas.
+4. Hiçbir ayara dokunmadan **"Deploy"** butonuna tıkla.
+5. 15 saniye içinde sana özel tertemiz linkin hazır: `https://nurullahinsinavi.vercel.app` 🎉
 
 ---
 
@@ -33,16 +33,15 @@ Arkadaşlarına atabilmek için projeyi internette ücretsiz barındırabileceğ
 Linkini aldıktan sonra arkadaşlarına doğrudan şunu kopyalayıp atabilirsin:
 
 > "Beyler Nurullah'ın Sınavı oyununu yaptım! 🎮  
-> Linke tıklayıp hemen oynayabilirsiniz: **[BURAYA_LINKINI_YAZ]**  
+> Linke tıklayıp hemen oynayabilirsiniz: **https://nurullahinsinavi.vercel.app**  
 >  
-> 💡 **iPhone kullananlar:** Safari'de açtıktan sonra alttaki **Paylaş** simgesine basıp **'Ana Ekrana Ekle'** derseniz telefona doğrudan uygulama gibi yükleniyor, tam ekran açılıyor!  
+> 💡 **iPhone (iOS) kullananlar:** Safari'de açtıktan sonra ekranın altındaki **Paylaş** (⎋) simgesine basıp **'Ana Ekrana Ekle'** derseniz telefona doğrudan uygulama gibi yükleniyor, tam ekran açılıyor!  
 > 💡 **Android kullananlar:** Chrome'da sağ üstteki 3 noktadan **'Uygulamayı Yükle'** veya **'Ana Ekrana Ekle'** diyebilirsiniz."
 
 ---
 
-## 🍏 3. iPhone Kullanan Arkadaşlarının Deneyimi (Neden En İyisi?)
-1. **Sıfır Bilgisayar & Sıfır Şifre:** Bilgisayara kablo takmakla, Apple ID şifresi girmekle veya 7 günlük sertifika iptalleriyle uğraşmazlar.
-2. **Tam Ekran (Standalone):** Ana ekrana eklediklerinde Safari'nin adres çubuğu veya düğmeleri kaybolur; Apple Store'dan indirilmiş yerel bir oyun gibi tam ekran açılır.
-3. **Piksel İkon:** Telefonun ana ekranında oyunun özel Nurullah retro piksel ikonu görünür.
-4. **Çevrimdışı (Offline) Desteği:** Bir kez açtıktan sonra metroda veya internetsiz ortamda bile Service Worker sayesinde çalışır.
-5. **Otomatik Güncelleme:** Oyunda yeni soru eklediğinde veya bir şeyi değiştirdiğinde arkadaşlarının tekrar bir şey indirmesine gerek kalmaz; link otomatik güncellenir.
+## 🌟 Neden Bu Yöntem En İyisi?
+- 🚫 **Sıfır İstenmeyen Tuş / Logo:** Netlify gibi ekrana yabancı butonlar koymaz.
+- 🍏 **iPhone'da Tam Ekran:** Arkadaşların ana ekrana eklediğinde Safari'nin adres çubuğu kaybolur, tam ekran yerel uygulama gibi çalışır.
+- ⚡ **Çevrimdışı (Offline):** Service Worker sayesinde bir kez açtıktan sonra internetsizken bile çalışır.
+- 🔄 **Otomatik Güncelleme:** Oyuna yeni soru ekleyip `git push` yaptığında tüm arkadaşlarının oyunu otomatik güncellenir!
