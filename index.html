@@ -20,7 +20,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--tx);font-family:'VT323','Courier New',monospace;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
 #app{position:relative;height:100%;max-width:540px;margin:0 auto;padding:6px 8px;display:flex;flex-direction:column;gap:5px}
 #hud{display:flex;justify-content:space-between;align-items:center;font-size:22px;color:var(--ln);min-height:26px}
-#opp-bar{display:none;display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+#opp-bar{display:none;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 #opp-bar::-webkit-scrollbar{display:none}
 .p-chip{display:inline-flex;align-items:center;gap:4px;background:#171a33;border:1px solid #55597f;border-radius:3px;padding:2px 6px;font-size:16px;white-space:nowrap}
 .p-chip.me{border-color:var(--ln);background:#22264a}
@@ -41,16 +41,36 @@ canvas{width:100%;aspect-ratio:16/9;image-rendering:pixelated;border:3px solid v
 #aim{font-size:19px;min-height:22px;text-align:center;color:#8fd3ff;flex:none}
 #aim.bad{color:#ff6b6b}
 #ai{font:inherit;font-size:24px;min-height:56px;margin-top:auto;color:#fff;border:3px solid var(--ln);background:linear-gradient(90deg,#3a8dde var(--p,0%),#1c2b4a var(--p,0%));touch-action:none;cursor:pointer;flex:none}
-#ov{position:absolute;inset:0;background:rgba(13,13,26,.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;overflow-y:auto}
-#ov h1{font-size:36px;margin:0;color:var(--ln);line-height:1}
-#ov p{font-size:20px;margin:0;line-height:1.15}
-#ov button{font:inherit;font-size:24px;width:100%;max-width:340px;padding:8px 12px;background:var(--bx);color:var(--ln);border:3px solid var(--ln);cursor:pointer;touch-action:manipulation}
+#ov{position:absolute;inset:0;background:rgba(13,13,26,.97);z-index:10;display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 12px;text-align:center;overflow-y:auto}
+#ov>:first-child{margin-top:auto}
+#ov>:last-child{margin-bottom:auto}
+#ov h1{font-size:31px;margin:0;color:var(--ln);line-height:1}
+#ov p{font-size:19px;margin:0;line-height:1.15}
+#ov button{font:inherit;font-size:23px;width:100%;max-width:340px;padding:7px 10px;background:var(--bx);color:var(--ln);border:3px solid var(--ln);cursor:pointer;touch-action:manipulation}
 #ov button:active{background:var(--ln);color:var(--bg)}
 #ov button.sel{background:var(--ln);color:var(--bg);font-weight:bold}
-#ov input{font:inherit;font-size:26px;width:100%;max-width:340px;text-align:center;padding:6px;background:#0d0d1a;color:#fff;border:3px solid #55597f}
+#ov input{font:inherit;font-size:24px;width:100%;max-width:340px;text-align:center;padding:5px;background:#0d0d1a;color:#fff;border:3px solid #55597f}
 .sh{animation:sh .35s}@keyframes sh{25%{transform:translate(-6px,3px)}50%{transform:translate(6px,-3px)}75%{transform:translate(-4px,-2px)}}
 .row{display:flex;gap:6px;width:100%;max-width:340px}
-.row button{flex:1;font-size:20px;padding:6px 2px}
+.row button{flex:1;font-size:19px;padding:6px 2px}
+.av-card{display:flex;align-items:center;gap:10px;width:100%;max-width:340px;background:#171a33;border:2px solid #55597f;padding:7px 10px;text-align:left}
+.av-mini{width:36px !important;height:45px !important;aspect-ratio:auto !important;border:2px solid #55597f !important;background:#1d3b2f !important;image-rendering:pixelated;flex:none}
+.av-prev{width:72px !important;height:90px !important;aspect-ratio:auto !important;border:3px solid var(--ln) !important;background:#1d3b2f !important;image-rendering:pixelated;flex:none}
+.t-badge{display:inline-block;padding:0 4px;font-size:14px;line-height:1.15;border:1px solid rgba(255,255,255,.35);border-radius:2px;font-weight:bold;vertical-align:middle}
+.cust-box{width:100%;max-width:340px;background:#12152b;border:2px solid #424870;padding:7px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.cust-lbl{font-size:16px;color:#8fd3ff;display:flex;justify-content:space-between;align-items:center}
+.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:min-content;align-content:start;gap:4px;width:100%;max-height:168px;overflow-y:auto}
+#ov .team-btn{width:auto;max-width:none;min-width:0;min-height:44px;overflow:hidden;font-size:14px;line-height:1.05;padding:5px 2px;border:2px solid #474d75;background:#171a33;color:#f4f4f4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+#ov .team-btn.sel{border-color:#f5d76e;background:#262c54;color:#f5d76e;font-weight:bold}
+.t-swatch{display:inline-flex;width:24px;height:12px;border:1px solid rgba(255,255,255,.45);overflow:hidden;flex:none}
+.t-swatch i{flex:1;display:block;height:100%}
+.col-dots{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#ov .col-dot{width:26px;height:26px;max-width:26px;padding:0;border:2px solid #55597f;border-radius:3px}
+#ov .col-dot.sel{border-color:#fff;transform:scale(1.12);box-shadow:0 0 0 2px var(--ln)}
+.pill-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%}
+.pill-row-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+#ov .pill-btn{width:auto;max-width:none;min-width:0;font-size:14px;padding:4px 1px;border:2px solid #55597f;background:#171a33;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ov .pill-btn.sel{background:var(--ln);color:var(--bg);border-color:var(--ln);font-weight:bold}
 .lb-table{width:100%;max-width:360px;border-collapse:collapse;margin:6px 0;font-size:20px}
 .lb-table td{padding:4px 6px;border-bottom:1px solid #333}
 .lb-table tr:first-child td{color:#4ade80;font-size:22px;font-weight:bold}
@@ -135,14 +155,158 @@ function drawCheckmark(cx,cy,scale){
  }
 }
 
-/* SPRITES */
+/* SPRITES & PIXEL FUTBOL TAKIMLARI + KARAKTER ÖZELLEŞTİRME */
 const SP=["....HHHH....","...HHHHHH...","...HSSSSH...","...SESSES...","...SSSSSS...","....SSSS....","..TTTTTTTT..",".STTTTTTTTS.",".STTTTTTTTS.",".SSTTTTTTSS.","...PPPPPP...","...PPPPPP...","...PP..PP...","...PP..PP...","..BBB..BBB.."];
 const PRC={H:'#bbb',S:'#e0b080',E:'#111',T:'#444',P:'#222',B:'#000'};
 const hair=['#222','#6b4423','#c9a227','#a33'],shirt=['#4a7','#59c','#c8a','#ca4','#888'];
 const stu=j=>({H:hair[j%4],S:j%3?'#f1c27d':'#c68642',E:'#111',T:shirt[j%5],P:'#334',B:'#222'});
-function R(c,x,y,w,h){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
-function spr(x,y,s,p){SP.forEach((r,j)=>{for(let i=0;i<12;i++){if(r[i]!=='.')R(p[r[i]],x+i*s,y+j*s,s,s)}})}
+function Rc(cCtx,c,x,y,w,h){cCtx.fillStyle=c;cCtx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
+function R(c,x,y,w,h){Rc(ctx,c,x,y,w,h)}
+function spr(x,y,s,p,cCtx){const g=cCtx||ctx;SP.forEach((r,j)=>{for(let i=0;i<12;i++){if(r[i]!=='.')Rc(g,p[r[i]],x+i*s,y+j*s,s,s)}})}
 function T(t,x,y,c,z){ctx.fillStyle=c;ctx.font=(z||12)+'px VT323,monospace';ctx.fillText(t,x,y)}
+
+const HAIR_NAMES=['Klasik','Dikenli','Uzun','Kısa','Kıvırcık','Kel'];
+const HAIR_MAPS=[
+  ["....HHHH....","...HHHHHH...","...HSSSSH...","...SESSES...","...SSSSSS...","....SSSS...."],
+  ["..H.H..H.H..","..HHHHHHHH..","...HSSSSH...","...SESSES...","...SSSSSS...","....SSSS...."],
+  ["...HHHHHH...","..HHHHHHHH..","..HHSSSSHH..","..HSESSESH..","..HSSSSSSH..","...HSSSSH..."],
+  ["............","...HHHHHH...","...SSSSSS...","...SESSES...","...SSSSSS...","....SSSS...."],
+  ["..HHHHHHHH..",".HHHHHHHHHH.",".HHHSSSSHHH.","..HSESSESH..","...SSSSSS...","....SSSS...."],
+  ["............","...SSWSSS...","...SSSSSS...","...SESSES...","...SSSSSS...","....SSSS...."]
+];
+const HAIR_COLORS=['#1e1e26','#6b4423','#eab308','#c2410c','#cbd5e1','#38bdf8','#22c55e'];
+const SKIN_COLORS=['#fde0c6','#f1c27d','#d49b6a','#a56943','#6f4328'];
+const BOOT_COLORS=['#171717','#f8fafc','#4ade80','#facc15','#ef4444'];
+const ACC_NAMES=['Yok','Gözlük','Bant','Şapka','Sakal'];
+const BODY_MAPS={
+  stripes:["..TTUUTTUU..",".UTTUUTTUUT.",".STTUUTTUUS.",".SSTUUTTUSS."],
+  halves: ["..TTTTUUUU..",".UTTTTUUUUT.",".STTTTUUUUS.",".SSTTTUUUSS."],
+  center: ["..TTVUUVTT..",".TTTVUUVTTT.",".STTVUUVTTS.",".SSTVUUVTSS."],
+  sleeves:["..UUTTTTUU..",".UUTTTTTTUU.",".STTTTTTTTS.",".SSTTTTTTSS."],
+  hoops:  ["..TTTVVTTT..",".TTUUUUUUTT.",".STUUUUUUTS.",".SSTTTTTTSS."],
+  sash:   ["..UUTTTTTT..",".TTUUTTTTTT.",".STTTUUTTTS.",".SSTTTUUUSS."],
+  trim:   ["..VTTVVTTV..",".UTTTTTTTTU.",".STTTTTTTTS.",".SSTTTTTTSS."],
+  classic:["..TTTTTTTT..",".TTTTTTTTTT.",".STTTTTTTTS.",".SSTTTTTTSS."]
+};
+const LEGS_MAP=["...PPPPPP...","...PPPPPP...","...KK..KK...","...KK..KK...","..BBB..BBB.."];
+
+const TEAMS=[
+  // Türkiye Takımları
+  {id:'fb', n:'Fenerbahçe', code:'FB', lg:'tr', p:'#facc15',s:'#1e3a8a',v:'#ffffff',sh:'#1e3a8a',sk:'#facc15',pat:'stripes',bg:'#1e3a8a',fg:'#facc15'},
+  {id:'gs', n:'Galatasaray',code:'GS', lg:'tr', p:'#facc15',s:'#b91c1c',v:'#ffffff',sh:'#b91c1c',sk:'#facc15',pat:'halves', bg:'#b91c1c',fg:'#facc15'},
+  {id:'bjk',n:'Beşiktaş',   code:'BJK',lg:'tr', p:'#f8fafc',s:'#111827',v:'#dc2626',sh:'#111827',sk:'#f8fafc',pat:'stripes',bg:'#111827',fg:'#f8fafc'},
+  {id:'ts', n:'Trabzonspor',code:'TS', lg:'tr', p:'#7f1d3a',s:'#38bdf8',v:'#f8fafc',sh:'#7f1d3a',sk:'#38bdf8',pat:'stripes',bg:'#7f1d3a',fg:'#38bdf8'},
+  {id:'tr', n:'Türkiye',    code:'TR', lg:'tr', p:'#dc2626',s:'#f8fafc',v:'#ffffff',sh:'#dc2626',sk:'#dc2626',pat:'hoops',  bg:'#dc2626',fg:'#ffffff'},
+  // Popüler Dünya Takımları
+  {id:'rma',n:'Real Madrid',code:'RMA',lg:'world',p:'#f8fafc',s:'#eab308',v:'#1e3a8a',sh:'#f8fafc',sk:'#f8fafc',pat:'trim',   bg:'#f8fafc',fg:'#1e3a8a'},
+  {id:'bar',n:'Barcelona',  code:'BAR',lg:'world',p:'#1d4ed8',s:'#991b1b',v:'#facc15',sh:'#1d4ed8',sk:'#1d4ed8',pat:'stripes',bg:'#1d4ed8',fg:'#facc15'},
+  {id:'liv',n:'Liverpool',  code:'LIV',lg:'world',p:'#c8102e',s:'#f8fafc',v:'#facc15',sh:'#c8102e',sk:'#c8102e',pat:'trim',   bg:'#c8102e',fg:'#facc15'},
+  {id:'mci',n:'Man. City',  code:'MCI',lg:'world',p:'#60a5fa',s:'#f8fafc',v:'#1e3a8a',sh:'#f8fafc',sk:'#60a5fa',pat:'trim',   bg:'#60a5fa',fg:'#0f172a'},
+  {id:'ars',n:'Arsenal',    code:'ARS',lg:'world',p:'#dc2626',s:'#f8fafc',v:'#eab308',sh:'#f8fafc',sk:'#dc2626',pat:'sleeves',bg:'#dc2626',fg:'#ffffff'},
+  {id:'mun',n:'Man. United',code:'MUN',lg:'world',p:'#da291c',s:'#111827',v:'#f8fafc',sh:'#f8fafc',sk:'#111827',pat:'trim',   bg:'#da291c',fg:'#facc15'},
+  {id:'bay',n:'Bayern Münih',code:'BAY',lg:'world',p:'#dc2626',s:'#f8fafc',v:'#1e3a8a',sh:'#dc2626',sk:'#dc2626',pat:'hoops',  bg:'#dc2626',fg:'#ffffff'},
+  {id:'psg',n:'PSG',        code:'PSG',lg:'world',p:'#0f172a',s:'#dc2626',v:'#f8fafc',sh:'#0f172a',sk:'#0f172a',pat:'center', bg:'#0f172a',fg:'#f87171'},
+  {id:'mil',n:'AC Milan',   code:'MIL',lg:'world',p:'#dc2626',s:'#171717',v:'#f8fafc',sh:'#f8fafc',sk:'#171717',pat:'stripes',bg:'#171717',fg:'#ef4444'},
+  {id:'int',n:'Inter',      code:'INT',lg:'world',p:'#1d4ed8',s:'#111827',v:'#eab308',sh:'#111827',sk:'#111827',pat:'stripes',bg:'#1d4ed8',fg:'#facc15'},
+  {id:'juv',n:'Juventus',   code:'JUV',lg:'world',p:'#111827',s:'#f8fafc',v:'#eab308',sh:'#111827',sk:'#111827',pat:'stripes',bg:'#111827',fg:'#f8fafc'},
+  {id:'dor',n:'Dortmund',   code:'DOR',lg:'world',p:'#facc15',s:'#171717',v:'#f8fafc',sh:'#171717',sk:'#facc15',pat:'sash',   bg:'#facc15',fg:'#171717'},
+  {id:'che',n:'Chelsea',    code:'CHE',lg:'world',p:'#034694',s:'#f8fafc',v:'#facc15',sh:'#034694',sk:'#f8fafc',pat:'trim',   bg:'#034694',fg:'#ffffff'},
+  {id:'bra',n:'Brezilya',   code:'BRA',lg:'world',p:'#facc15',s:'#16a34a',v:'#1d4ed8',sh:'#1d4ed8',sk:'#f8fafc',pat:'trim',   bg:'#16a34a',fg:'#facc15'},
+  {id:'arg',n:'Arjantin',   code:'ARG',lg:'world',p:'#38bdf8',s:'#f8fafc',v:'#eab308',sh:'#111827',sk:'#f8fafc',pat:'stripes',bg:'#38bdf8',fg:'#0f172a'},
+  // Klasik Renkler
+  {id:'auto',n:'Oda Rengi', code:'',    lg:'classic',p:'#3a8dde',s:'#2f4b9c',v:'#ffffff',sh:'#2f4b9c',sk:'#2f4b9c',pat:'classic',bg:'#262c54',fg:'#f5d76e'}
+];
+const TEAM_MAP={};TEAMS.forEach(t=>TEAM_MAP[t.id]=t);
+
+function defaultAvatar(){return{t:'auto',hs:0,hc:0,sk:1,ac:0,bt:0}}
+let myAvatar=defaultAvatar();
+try{
+  const savedAv=JSON.parse(localStorage.getItem('navatar_v1')||'null');
+  if(savedAv&&typeof savedAv==='object')myAvatar=sanitizeAvatar(savedAv,0);
+}catch(e){}
+function saveAvatar(){try{localStorage.setItem('navatar_v1',JSON.stringify(myAvatar))}catch(e){}}
+function sanitizeAvatar(raw,seat){
+  const d=defaultAvatar();
+  if(!raw||typeof raw!=='object')return Object.assign(d,{hc:(seat||0)%HAIR_COLORS.length});
+  const tid=(typeof raw.t==='string'&&(TEAM_MAP[raw.t]||/^c[0-7]$/.test(raw.t)))?raw.t:'auto';
+  return{
+    t:tid,
+    hs:Math.max(0,Math.min(HAIR_MAPS.length-1,(raw.hs|0))),
+    hc:Math.max(0,Math.min(HAIR_COLORS.length-1,(raw.hc|0))),
+    sk:Math.max(0,Math.min(SKIN_COLORS.length-1,(raw.sk|0))),
+    ac:Math.max(0,Math.min(ACC_NAMES.length-1,(raw.ac|0))),
+    bt:Math.max(0,Math.min(BOOT_COLORS.length-1,(raw.bt|0)))
+  };
+}
+function resolveTeam(av,seat){
+  const tid=(av&&av.t)||'auto';
+  if(TEAM_MAP[tid]&&tid!=='auto')return TEAM_MAP[tid];
+  if(/^c[0-7]$/.test(tid)){
+    const c=PCOLORS[+tid[1]];
+    return{id:tid,n:c.n,code:'',lg:'classic',p:c.hex,s:c.light,v:'#fff',sh:'#2f4b9c',sk:'#2f4b9c',pat:'classic',bg:c.hex,fg:'#fff'};
+  }
+  const c=PCOLORS[(seat||0)%8];
+  return{id:'auto',n:'Oda Rengi',code:'',lg:'classic',p:c.hex,s:c.light,v:'#fff',sh:'#2f4b9c',sk:'#2f4b9c',pat:'classic',bg:c.hex,fg:'#fff'};
+}
+function drawPlayerSprite(cCtx,x,y,s,av,seat){
+  const a=av?sanitizeAvatar(av,seat):sanitizeAvatar(null,seat);
+  const tm=resolveTeam(a,seat);
+  const pal={
+    H:HAIR_COLORS[a.hc],
+    S:SKIN_COLORS[a.sk],
+    W:'#fff4e6',
+    E:'#111118',
+    T:tm.p,
+    U:tm.s,
+    V:tm.v,
+    P:tm.sh,
+    K:tm.sk,
+    B:BOOT_COLORS[a.bt]
+  };
+  const head=HAIR_MAPS[a.hs];
+  const body=BODY_MAPS[tm.pat]||BODY_MAPS.classic;
+  const rows=head.concat(body,LEGS_MAP);
+  rows.forEach((r,j)=>{
+    for(let i=0;i<12;i++){
+      if(r[i]!=='.')Rc(cCtx,pal[r[i]],x+i*s,y+j*s,s,s);
+    }
+  });
+  // Pixel Aksesuarlar
+  if(a.ac===1){ // Gözlük
+    Rc(cCtx,'#111827',x+3*s,y+3*s,6*s,s);
+    Rc(cCtx,'#38bdf8',x+4*s,y+3*s,s,s);
+    Rc(cCtx,'#38bdf8',x+7*s,y+3*s,s,s);
+  }else if(a.ac===2){ // Saç Bandı
+    Rc(cCtx,tm.p,x+3*s,y+1*s,6*s,s);
+    Rc(cCtx,tm.s,x+9*s,y+1*s,s,s);
+  }else if(a.ac===3){ // Şapka
+    Rc(cCtx,tm.p,x+3*s,y+0*s,6*s,s);
+    Rc(cCtx,tm.s,x+5*s,y+0*s,2*s,s);
+    Rc(cCtx,tm.p,x+3*s,y+1*s,8*s,s);
+  }else if(a.ac===4){ // Sakal
+    Rc(cCtx,pal.H,x+4*s,y+4*s,s,s);
+    Rc(cCtx,pal.H,x+7*s,y+4*s,s,s);
+    Rc(cCtx,pal.H,x+4*s,y+5*s,4*s,s);
+  }
+}
+function teamBadgeHtml(av,seat){
+  const tm=resolveTeam(av,seat);
+  if(!tm.code)return '';
+  return `<span class="t-badge" style="background:${tm.bg};color:${tm.fg}">${tm.code}</span>`;
+}
+function renderAvatarCanvases(root){
+  (root||document).querySelectorAll('canvas[data-av]').forEach(el=>{
+    const c2=el.getContext('2d');c2.imageSmoothingEnabled=false;
+    const w=el.width,h=el.height;
+    c2.fillStyle='#1d3b2f';c2.fillRect(0,0,w,h);
+    c2.fillStyle='#24523f';c2.fillRect(0,Math.floor(h*0.72),w,h);
+    let av=myAvatar,seat=0;
+    try{const d=JSON.parse(el.dataset.av);av=d.av||myAvatar;seat=d.seat||0;}catch(e){}
+    const sc=Math.max(1,Math.floor(Math.min(w/12,h/15)));
+    const ox=Math.floor((w-12*sc)/2),oy=Math.floor((h-15*sc)/2);
+    drawPlayerSprite(c2,ox,oy,sc,av,seat);
+  });
+}
 
 /* SORULAR (Fizik Mühendisliği) */
 const QE=[["Kuvvetin SI birimi?","Newton","Joule","Watt","Pascal"],["Enerjinin SI birimi?","Joule","Newton","Watt","Volt"],["Gücün SI birimi?","Watt","Joule","Amper","Henry"],["F = m·a ifadesinde a nedir?","İvme","Alan","Açı","Genlik"],["Yer çekimi ivmesi yaklaşık?","9,8 m/s²","1,6 m/s²","3,7 m/s²","98 m/s²"],["Hız–zaman grafiğinin eğimi?","İvme","Yer değiştirme","Kuvvet","Güç"],["Elektrik akımının birimi?","Amper","Volt","Ohm","Farad"],["Direncin birimi?","Ohm","Volt","Amper","Weber"],["Ohm yasası?","V = I·R","V = I/R","V = R/I","P = V + I"],["Işık hangi dalga türüdür?","Elektromanyetik","Boyuna mekanik","Ses","Gravitasyon"],["Frekansın birimi?","Hertz","Saniye","Metre","Joule"],["Kinetik enerji formülü?","½mv²","mv²","mgh","m·a"],["Yerçekimi potansiyel enerjisi?","mgh","½mv²","F·t","m/a"],["Momentum formülü?","p = m·v","p = m·a","p = F·d","p = m/v"],["Basıncın SI birimi?","Pascal","Newton","Joule","Watt"],["Işık hızı yaklaşık?","3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁵ m/s"],["Mutlak sıfır kaç Kelvin?","0 K","−273 K","273 K","100 K"],["Ses boşlukta yayılır mı?","Hayır","Evet","Sadece düşük frekansta","Sadece gece"],["Elektronun yükü?","Negatif","Pozitif","Nötr","Değişken"],["İş formülü (paralel)?","W = F·d","W = F/d","W = m·v","W = P/t"],["1 litre kaç m³?","10⁻³ m³","10⁻² m³","10⁻⁶ m³","1 m³"],["Seri bağlı dirençlerde eşdeğer direnç?","R₁ + R₂ + …","1/R₁ + 1/R₂","R₁·R₂","R₁ − R₂"],["Newton’un 3. yasası?","Etki–tepki","Eylemsizlik","F = ma","Kütle çekimi"],["Proton ve nötron nerede bulunur?","Çekirdekte","Elektron bulutunda","Yörüngede","Atomun dışında"],["Güç = ?","İş / zaman","İş × zaman","Kuvvet × zaman","Enerji × hız"],["Kapasitansın birimi?","Farad","Henry","Tesla","Weber"],["Manyetik alan şiddetinin (B) SI birimi?","Tesla","Henry","Farad","Siemens"],["Dalga boyu × frekans = ?","Dalga hızı","Genlik","Periyot","Enerji"]];
@@ -196,7 +360,7 @@ function msg(t,bad){const m=$('aim');if(noAi){m.textContent='';return}m.textCont
 
 const best=i=>{try{return+localStorage.getItem('nb'+i)||0}catch(e){return 0}};
 const mb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 /* =========================================================
    REAL-TIME MULTIPLAYER ENGINE (MQTT CLOUD RELAY)
@@ -207,17 +371,17 @@ const MQTT_BROKERS = [
   { host: 'broker.hivemq.com', port: 8884, path: '/mqtt' }
 ];
 
-let mqttLib = null, cTok = 0, isMp = false, myRole = 'solo', myCode = '', myName = '', mySeat = 0, mpHost = null, mpClient = null;
+let mqttLib = null, cTok = 0, isMp = false, myRole = 'solo', myCode = '', myName = '', mySeat = 0, mpHost = null, mpClient = null, activeBrokerIdx = 0;
 try { myName = localStorage.getItem('nname') || ''; } catch(e) {}
 try {
   if (window.caches) {
     caches.keys().then(keys => {
-      keys.forEach(k => { if (k !== 'nurullah-sinavi-v3') caches.delete(k); });
+      keys.forEach(k => { if (k !== 'nurullah-sinavi-v4') caches.delete(k); });
     }).catch(()=>{});
   }
 } catch(e) {}
 const gn = () => {
-  const e = $('nm');
+  const e = $('nm') || $('av-nm');
   const v = e ? e.value.trim().slice(0, 10) : myName;
   myName = v;
   try { localStorage.setItem('nname', v); } catch(x) {}
@@ -248,36 +412,45 @@ function loadMqtt() {
   return mqttLib;
 }
 
-function connectMqtt(clientId) {
+function connectMqtt(clientId, preferredIdx = null, timeoutMs = 6500, willInfo = null) {
   return new Promise((resolve, reject) => {
-    let idx = 0;
+    const order = [];
+    if (preferredIdx !== null && MQTT_BROKERS[preferredIdx]) order.push(preferredIdx);
+    for (let i = 0; i < MQTT_BROKERS.length; i++) {
+      if (!order.includes(i)) order.push(i);
+    }
+    let pos = 0;
     function tryNext() {
-      if (idx >= MQTT_BROKERS.length) {
+      if (pos >= order.length) {
         return reject(new Error('Sunuculara bağlanılamadı.'));
       }
-      const b = MQTT_BROKERS[idx++];
+      const brokerIdx = order[pos++];
+      const b = MQTT_BROKERS[brokerIdx];
       const Paho = window.Paho;
       const Client = Paho.Client || (Paho.MQTT && Paho.MQTT.Client);
+      const Message = Paho.Message || (Paho.MQTT && Paho.MQTT.Message);
       const c = new Client(b.host, b.port, b.path, clientId);
       let settled = false;
+      const waitMs = (preferredIdx !== null && brokerIdx === preferredIdx) ? Math.max(timeoutMs, 7500) : timeoutMs;
       const timer = setTimeout(() => {
         if (!settled) {
           settled = true;
           try { c.disconnect(); } catch(e) {}
           tryNext();
         }
-      }, 3500);
+      }, waitMs);
 
-      c.connect({
+      const opts = {
         useSSL: true,
-        timeout: 4,
-        keepAliveInterval: 30,
+        timeout: Math.ceil(waitMs / 1000),
+        keepAliveInterval: 15,
         cleanSession: true,
         onSuccess: () => {
           if (!settled) {
             settled = true;
             clearTimeout(timer);
-            resolve(c);
+            activeBrokerIdx = brokerIdx;
+            resolve({ client: c, brokerIdx });
           }
         },
         onFailure: () => {
@@ -287,33 +460,51 @@ function connectMqtt(clientId) {
             tryNext();
           }
         }
-      });
+      };
+      if (willInfo && Message) {
+        const wm = new Message(willInfo.payload);
+        wm.destinationName = willInfo.topic;
+        wm.qos = 1;
+        wm.retained = !!willInfo.retained;
+        opts.willMessage = wm;
+      }
+      try { c.connect(opts); } catch(e) {
+        if (!settled) { settled = true; clearTimeout(timer); tryNext(); }
+      }
     }
     tryNext();
   });
 }
 
-function sendMqtt(client, topic, data) {
-  if (!client || (client.isConnected && !client.isConnected())) return;
+function sendMqtt(client, topic, data, retained = false) {
+  if (!client || (client.isConnected && !client.isConnected())) return false;
   try {
     const Paho = window.Paho;
     const Message = Paho.Message || (Paho.MQTT && Paho.MQTT.Message);
-    const m = new Message(JSON.stringify(data));
+    const payload = typeof data === 'string' ? data : JSON.stringify(data);
+    const m = new Message(payload);
     m.destinationName = topic;
     m.qos = 1;
+    m.retained = !!retained;
     client.send(m);
+    return true;
   } catch(e) {
     console.warn('sendMqtt err:', e);
+    return false;
   }
 }
 
 /* HOST CONTROLLER */
 class RoomHost {
-  constructor(client, code) {
+  constructor(client, code, brokerIdx) {
     this.client = client;
     this.code = code;
+    this.brokerIdx = brokerIdx || 0;
     this.clients = new Map();
     this.nextSeat = 1;
+    this.destroyed = false;
+    this.reconnecting = false;
+    this.hbCount = 0;
     this.state = {
       mode: gameMode,
       noAi: noAi,
@@ -322,6 +513,7 @@ class RoomHost {
         id: 'host',
         name: myName || 'Nurullah',
         seat: 0,
+        av: sanitizeAvatar(myAvatar, 0),
         isHost: true,
         score: 0,
         corr: 0,
@@ -336,36 +528,69 @@ class RoomHost {
     this.roundWinner = null;
     this.topicHost = 'nsinav/v3/' + code + '/host';
     this.topicAll = 'nsinav/v3/' + code + '/all';
+    this.topicMeta = 'nsinav/v3/' + code + '/meta';
     this.topicGuest = (id) => 'nsinav/v3/' + code + '/guest/' + id;
 
+    this.attachClient(client);
+    this.hb = setInterval(() => this.heartbeat(), 2000);
+  }
+
+  attachClient(client) {
     client.onMessageArrived = (m) => this.onMessage(m.destinationName, m.payloadString);
     client.onConnectionLost = (e) => {
-      if (!e || e.errorCode === 0) return;
+      if (this.destroyed || !e || e.errorCode === 0) return;
       console.warn('Host connection lost:', e);
-      if (st === 'lobby' || st === 'play') {
-        setTimeout(() => {
-          if (this.client && (!this.client.isConnected || !this.client.isConnected())) {
-            this.client.connect({
-              useSSL: true, timeout: 4, keepAliveInterval: 30, cleanSession: false,
-              onSuccess: () => {
-                this.client.subscribe(this.topicHost);
-                this.client.subscribe(this.topicAll);
-              }
-            });
-          }
-        }, 1000);
+      if (isMp && myRole === 'host') {
+        setTimeout(() => this.reconnect(), 600);
       }
     };
-    this.hb = setInterval(() => this.heartbeat(), 2000);
+  }
+
+  async reconnect() {
+    if (this.destroyed || this.reconnecting || !isMp || myRole !== 'host') return;
+    if (this.client && this.client.isConnected && this.client.isConnected()) return;
+    this.reconnecting = true;
+    try {
+      try { if (this.client) this.client.disconnect(); } catch(e) {}
+      const hostId = 'ns_h_' + this.code + '_' + Math.random().toString(36).slice(2, 6);
+      const conn = await connectMqtt(hostId, this.brokerIdx, 6000, { topic: this.topicMeta, payload: '', retained: true });
+      if (this.destroyed) { try { conn.client.disconnect(); } catch(e) {} return; }
+      this.client = conn.client;
+      this.brokerIdx = conn.brokerIdx;
+      this.attachClient(this.client);
+      await this.init();
+      this.syncSelf();
+      this.broadcast({ t: 'lobby_sync', state: this.state });
+      this.broadcast({ t: 'hb', players: this.state.players });
+    } catch(e) {
+      if (!this.destroyed && isMp && myRole === 'host') {
+        setTimeout(() => this.reconnect(), 2200);
+      }
+    } finally {
+      this.reconnecting = false;
+    }
+  }
+
+  publishMeta() {
+    sendMqtt(this.client, this.topicMeta, {
+      open: true,
+      broker: this.brokerIdx,
+      hostName: myName || 'Nurullah',
+      ts: Date.now()
+    }, true);
+  }
+
+  clearMeta() {
+    sendMqtt(this.client, this.topicMeta, '', true);
   }
 
   init() {
     return new Promise((resolve) => {
       let count = 0;
-      const done = () => { if (++count === 2) resolve(); };
+      const done = () => { if (++count === 2) { this.publishMeta(); resolve(); } };
       this.client.subscribe(this.topicHost, { qos: 1, onSuccess: done, onFailure: done });
       this.client.subscribe(this.topicAll, { qos: 1, onSuccess: done, onFailure: done });
-      setTimeout(resolve, 800);
+      setTimeout(() => { this.publishMeta(); resolve(); }, 1600);
     });
   }
 
@@ -384,8 +609,11 @@ class RoomHost {
     if (d.t === 'join') {
       if (this.clients.has(peerId)) {
         const existing = this.clients.get(peerId).player;
+        if (d.name) existing.name = String(d.name).slice(0, 10);
+        if (d.av) existing.av = sanitizeAvatar(d.av, existing.seat);
         sendMqtt(this.client, this.topicGuest(peerId), { t: 'welcome', seat: existing.seat, state: this.state });
         this.broadcast({ t: 'lobby_sync', state: this.state });
+        if (st === 'lobby') renderLobby(); else updateHudChips();
         return;
       }
       if (this.state.players.length >= 8) {
@@ -395,8 +623,9 @@ class RoomHost {
       const seat = this.nextSeat++;
       const pl = {
         id: peerId,
-        name: d.name || ('Oyuncu ' + (seat + 1)),
+        name: String(d.name || ('Oyuncu ' + (seat + 1))).slice(0, 10),
         seat: seat,
+        av: sanitizeAvatar(d.av, seat),
         isHost: false,
         score: 0,
         corr: 0,
@@ -410,6 +639,13 @@ class RoomHost {
       this.clients.set(peerId, { player: pl, lastSeen: Date.now() });
       this.state.players.push(pl);
       sendMqtt(this.client, this.topicGuest(peerId), { t: 'welcome', seat: seat, state: this.state });
+      this.broadcast({ t: 'lobby_sync', state: this.state });
+      if (st === 'lobby') renderLobby(); else updateHudChips();
+    }
+    else if (d.t === 'profile') {
+      const cl = this.clients.get(peerId); if (!cl) return;
+      if (d.name) cl.player.name = String(d.name).slice(0, 10);
+      if (d.av) cl.player.av = sanitizeAvatar(d.av, cl.player.seat);
       this.broadcast({ t: 'lobby_sync', state: this.state });
       if (st === 'lobby') renderLobby(); else updateHudChips();
     }
@@ -494,16 +730,26 @@ class RoomHost {
 
   syncSelf() {
     const me = this.state.players[0];
-    me.name = myName || 'Nurullah'; me.score = score; me.corr = corr; me.strikes = strikes; me.hold = hold ? 1 : 0; me.exp = out;
+    me.name = myName || 'Nurullah';
+    me.av = sanitizeAvatar(myAvatar, 0);
+    me.score = score; me.corr = corr; me.strikes = strikes; me.hold = hold ? 1 : 0; me.exp = out;
   }
 
   heartbeat() {
+    if (this.destroyed) return;
+    if (!this.client || (this.client.isConnected && !this.client.isConnected())) {
+      this.reconnect();
+      return;
+    }
     this.syncSelf();
     this.broadcast({ t: 'hb', players: this.state.players });
+    if (++this.hbCount % 5 === 0) this.publishMeta();
   }
 
   destroy() {
+    this.destroyed = true;
     clearInterval(this.hb);
+    try { this.clearMeta(); } catch(e) {}
     try { this.broadcast({ t: 'host_left' }); } catch(e) {}
     this.clients.clear();
     try { this.client.disconnect(); } catch(e) {}
@@ -512,39 +758,76 @@ class RoomHost {
 
 /* CLIENT CONTROLLER */
 class RoomClient {
-  constructor(client, code, id) {
+  constructor(client, code, id, brokerIdx) {
     this.client = client;
     this.code = code;
     this.id = id;
+    this.brokerIdx = brokerIdx || 0;
     this.peer = { id: id };
     this.players = [];
+    this.destroyed = false;
+    this.reconnecting = false;
+    this.roomSeen = false;
+    this.onMeta = null;
     this.topicAll = 'nsinav/v3/' + code + '/all';
     this.topicGuest = 'nsinav/v3/' + code + '/guest/' + id;
     this.topicHost = 'nsinav/v3/' + code + '/host';
+    this.topicMeta = 'nsinav/v3/' + code + '/meta';
 
+    this.attachClient(client);
+  }
+
+  attachClient(client) {
     client.onMessageArrived = (m) => this.onMessage(m.destinationName, m.payloadString);
     client.onConnectionLost = (e) => {
-      if (!e || e.errorCode === 0) return;
+      if (this.destroyed || !e || e.errorCode === 0) return;
       console.warn('Guest connection lost:', e);
-      if (st !== 'menu') {
-        duelMenu('Bağlantı koptu. Tekrar katılabilirsin.');
-        leave();
+      if (st === 'lobby' || st === 'play' || st === 'end') {
+        setTimeout(() => this.reconnect(), 700);
       }
     };
+  }
+
+  async reconnect() {
+    if (this.destroyed || this.reconnecting || !isMp || myRole !== 'guest') return;
+    if (this.client && this.client.isConnected && this.client.isConnected()) return;
+    this.reconnecting = true;
+    try {
+      try { if (this.client) this.client.disconnect(); } catch(e) {}
+      const conn = await connectMqtt(this.id, this.brokerIdx, 6000);
+      if (this.destroyed) { try { conn.client.disconnect(); } catch(e) {} return; }
+      this.client = conn.client;
+      this.attachClient(this.client);
+      await this.init();
+      this.send({ t: 'join', name: myName || 'Nurullah', av: sanitizeAvatar(myAvatar, mySeat) });
+    } catch(e) {
+      if (!this.destroyed && st !== 'menu') {
+        const prevCode = this.code;
+        leave();
+        duelMenu('Bağlantı koptu. Tekrar katılabilirsin.', prevCode);
+      }
+    } finally {
+      this.reconnecting = false;
+    }
   }
 
   init() {
     return new Promise((resolve) => {
       let count = 0;
-      const done = () => { if (++count === 2) resolve(); };
+      const done = () => { if (++count === 3) resolve(); };
       this.client.subscribe(this.topicAll, { qos: 1, onSuccess: done, onFailure: done });
       this.client.subscribe(this.topicGuest, { qos: 1, onSuccess: done, onFailure: done });
-      setTimeout(resolve, 800);
+      this.client.subscribe(this.topicMeta, { qos: 1, onSuccess: done, onFailure: done });
+      setTimeout(resolve, 2500);
     });
   }
 
   send(msg) {
     sendMqtt(this.client, this.topicHost, Object.assign({ from: this.id }, msg));
+  }
+
+  sendProfile() {
+    this.send({ t: 'profile', name: myName || 'Nurullah', av: sanitizeAvatar(myAvatar, mySeat) });
   }
 
   onWelcome(d) {
@@ -558,15 +841,25 @@ class RoomClient {
   }
 
   onMessage(topic, payload) {
+    if (!payload) return;
     let d;
     try { d = JSON.parse(payload); } catch(e) { return; }
+
+    if (topic === this.topicMeta) {
+      if (d && d.open && (!d.ts || Date.now() - d.ts < 180000)) {
+        this.roomSeen = true;
+        if (this.onMeta) this.onMeta(d);
+      }
+      return;
+    }
 
     if (d.t === 'welcome') {
       this.onWelcome(d);
     }
     else if (d.t === 'full') {
-      duelMenu('Oda dolu (Maksimum 8 oyuncu).');
+      const prevCode = this.code;
       leave();
+      duelMenu('Oda dolu (Maksimum 8 oyuncu).', prevCode);
     }
     else if (d.t === 'lobby_sync') {
       gameMode = d.state.mode;
@@ -612,24 +905,47 @@ class RoomClient {
       updateHudChips();
     }
     else if (d.t === 'host_left') {
-      duelMenu('Kurucu odadan ayrıldı.');
+      const prevCode = this.code;
       leave();
+      duelMenu('Kurucu odadan ayrıldı.', prevCode);
     }
   }
 
   destroy() {
+    this.destroyed = true;
     try { this.send({ t: 'leave' }); } catch(e) {}
     try { this.client.disconnect(); } catch(e) {}
   }
 }
 
+/* Mobil uygulamadan WhatsApp'a geçip dönünce bağlantıyı anında canlandır */
+function ensureMpAlive(){
+  if(!isMp)return;
+  if(myRole==='host'&&mpHost&&!mpHost.destroyed){
+    if(!mpHost.client||(mpHost.client.isConnected&&!mpHost.client.isConnected())){
+      mpHost.reconnect();
+    }else{
+      mpHost.publishMeta();
+      mpHost.heartbeat();
+    }
+  }else if(myRole==='guest'&&mpClient&&!mpClient.destroyed&&(st==='lobby'||st==='play'||st==='end')){
+    if(!mpClient.client||(mpClient.client.isConnected&&!mpClient.client.isConnected())){
+      mpClient.reconnect();
+    }
+  }
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')ensureMpAlive()});
+window.addEventListener('focus',ensureMpAlive);
+window.addEventListener('pageshow',ensureMpAlive);
+window.addEventListener('online',ensureMpAlive);
+
 function isMeP(p){return !isMp||(myRole==='host'&&p.id==='host')||(myRole==='guest'&&p.seat===mySeat)}
 function tickOf(p){return isMeP(p)?myTickUntil:(tickMap[p.id]||0)}
 function getPlayers(){
-  if(!isMp) return [{id:'me',name:myName||'Nurullah',seat:0,isHost:true,score,corr,strikes,hold:hold?1:0,exp:out}];
+  if(!isMp) return [{id:'me',name:myName||'Nurullah',seat:0,av:sanitizeAvatar(myAvatar,0),isHost:true,score,corr,strikes,hold:hold?1:0,exp:out}];
   if(myRole==='host'){mpHost.syncSelf();return mpHost.state.players}
   // Misafir: kendi kaydını yerel (en güncel) değerlerle göster
-  return (mpClient.players||[]).map(p=>p.seat===mySeat?Object.assign({},p,{name:myName||p.name,score,corr,strikes,hold:hold?1:0,exp:out||p.exp}):p);
+  return (mpClient.players||[]).map(p=>p.seat===mySeat?Object.assign({},p,{name:myName||p.name,av:sanitizeAvatar(myAvatar,mySeat),score,corr,strikes,hold:hold?1:0,exp:out||p.exp}):p);
 }
 
 function updateHudChips(){
@@ -640,10 +956,12 @@ function updateHudChips(){
   bar.innerHTML=players.map(p=>{
     const isMe=isMeP(p);
     const col=PCOLORS[p.seat%8];
+    const tm=resolveTeam(p.av,p.seat);
+    const borderCol=tm.code?((tm.p==='#0f172a'||tm.p==='#111827')?tm.s:tm.p):col.hex;
     const isTick=Date.now()<tickOf(p);
     const lives='❤'.repeat(Math.max(0,3-(p.strikes||0)))+'🖤'.repeat(Math.min(3,p.strikes||0));
-    return `<div class="p-chip ${isMe?'me':''} ${isTick?'tick':''}" style="border-left:4px solid ${col.hex}">
-      <span>${p.isHost?'👑':'👤'} <b>${esc(p.name)}</b></span>
+    return `<div class="p-chip ${isMe?'me':''} ${isTick?'tick':''}" style="border-left:4px solid ${borderCol}">
+      <span>${p.isHost?'👑':'👤'} <b>${esc(p.name)}</b> ${teamBadgeHtml(p.av,p.seat)}</span>
       <span style="color:${col.hex}">${p.score||0}p</span>
       <span style="font-size:13px">${p.exp?'❌':lives}</span>
       ${isTick?'<span style="color:#4ade80">✔</span>':''}
@@ -676,14 +994,143 @@ function forceUpdate(){
 }
 
 /* =========================================================
+   KARAKTER & FUTBOL TAKIMI ÖZELLEŞTİRME EKRANI
+   ========================================================= */
+let custLeague='tr';
+function teamSwatchHtml(tm){
+  return `<span class="t-swatch"><i style="background:${tm.p}"></i><i style="background:${tm.s}"></i></span>`;
+}
+function customizeMenu(returnTo){
+  const curTm=resolveTeam(myAvatar,mySeat||0);
+  if(curTm.lg==='world'||curTm.lg==='tr')custLeague=curTm.lg;
+  else if(myAvatar.t==='auto')custLeague='tr';
+  else custLeague='classic';
+  renderCustomizer(returnTo||'menu');
+}
+function renderCustomizer(returnTo){
+  const o=$('ov');o.style.display='flex';
+  const curTm=resolveTeam(myAvatar,mySeat||0);
+  const trTeams=TEAMS.filter(t=>t.lg==='tr');
+  const worldTeams=TEAMS.filter(t=>t.lg==='world');
+  const classicTeams=[TEAMS.find(t=>t.id==='auto'),...PCOLORS.map((c,idx)=>({id:'c'+idx,n:c.n,code:'',lg:'classic',p:c.hex,s:c.light,bg:c.hex,fg:'#fff'}))];
+  const list=custLeague==='tr'?trTeams:(custLeague==='world'?worldTeams:classicTeams);
+
+  o.innerHTML=`<h1>👕 KARAKTER & TAKIM</h1>
+  <div class="av-card">
+    <canvas id="av-prev" class="av-prev" width="60" height="75"></canvas>
+    <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
+      <input id="av-nm" maxlength="10" placeholder="Oyuncu adın" style="font-size:21px;padding:3px 6px">
+      <div style="font-size:18px;color:#f5d76e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        ${teamBadgeHtml(myAvatar,mySeat||0)} <b>${esc(curTm.n)}</b>
+      </div>
+      <button id="av-rnd" style="font-size:17px;padding:4px 6px;border-width:2px">🎲 Rastgele Oluştur</button>
+    </div>
+  </div>
+  <div class="cust-box">
+    <div class="cust-lbl"><span>⚽ Takım / Forma Seç</span><span style="color:#f5d76e;font-size:15px">${curTm.code||'Klasik'}</span></div>
+    <div class="pill-row">
+      <button class="pill-btn ${custLeague==='tr'?'sel':''}" data-lg="tr">🇹🇷 Türkiye</button>
+      <button class="pill-btn ${custLeague==='world'?'sel':''}" data-lg="world">🌍 Dünya</button>
+      <button class="pill-btn ${custLeague==='classic'?'sel':''}" data-lg="classic">🎨 Klasik</button>
+    </div>
+    <div class="team-grid">
+      ${list.map(t=>`<button class="team-btn ${myAvatar.t===t.id?'sel':''}" data-tid="${t.id}">
+        ${teamSwatchHtml(t)}
+        <span>${t.code?`<b>${t.code}</b> `:''}${esc(t.n)}</span>
+      </button>`).join('')}
+    </div>
+  </div>
+  <div class="cust-box">
+    <div class="cust-lbl"><span>💇 Saç Stili & Rengi</span><span style="color:#f5d76e">${HAIR_NAMES[myAvatar.hs]}</span></div>
+    <div class="pill-row">
+      ${HAIR_NAMES.map((hn,idx)=>`<button class="pill-btn ${myAvatar.hs===idx?'sel':''}" data-hs="${idx}">${hn}</button>`).join('')}
+    </div>
+    <div class="col-dots">
+      ${HAIR_COLORS.map((hc,idx)=>`<button class="col-dot ${myAvatar.hc===idx?'sel':''}" data-hc="${idx}" style="background:${hc}" title="Saç rengi"></button>`).join('')}
+    </div>
+    <div class="cust-lbl" style="margin-top:2px"><span>🧑 Ten & 👟 Krampon</span></div>
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div class="col-dots">
+        ${SKIN_COLORS.map((sc,idx)=>`<button class="col-dot ${myAvatar.sk===idx?'sel':''}" data-sk="${idx}" style="background:${sc}" title="Ten rengi"></button>`).join('')}
+      </div>
+      <div class="col-dots">
+        ${BOOT_COLORS.map((bc,idx)=>`<button class="col-dot ${myAvatar.bt===idx?'sel':''}" data-bt="${idx}" style="background:${bc}" title="Krampon rengi"></button>`).join('')}
+      </div>
+    </div>
+    <div class="cust-lbl" style="margin-top:2px"><span>🕶️ Aksesuar</span></div>
+    <div class="pill-row pill-row-5">
+      ${ACC_NAMES.map((an,idx)=>`<button class="pill-btn ${myAvatar.ac===idx?'sel':''}" data-ac="${idx}">${an}</button>`).join('')}
+    </div>
+  </div>
+  <button id="av-save" style="background:#1f7a3a;color:#fff;border-color:#4ade80">✅ KAYDET VE DÖN</button>`;
+
+  $('av-nm').value=myName;
+  $('av-nm').oninput=()=>{myName=$('av-nm').value.trim().slice(0,10);try{localStorage.setItem('nname',myName)}catch(x){}};
+
+  const drawPrev=()=>{
+    const pv=$('av-prev');if(!pv)return;
+    const pctx=pv.getContext('2d');pctx.imageSmoothingEnabled=false;
+    pctx.fillStyle='#1d3b2f';pctx.fillRect(0,0,pv.width,pv.height);
+    pctx.fillStyle='#24523f';pctx.fillRect(0,56,pv.width,19);
+    drawPlayerSprite(pctx,6,7,4,myAvatar,mySeat||0);
+  };
+  drawPrev();
+
+  $('av-rnd').onclick=()=>{
+    const pool=TEAMS.filter(t=>t.lg!=='classic');
+    const rt=pool[(Math.random()*pool.length)|0];
+    myAvatar={
+      t:rt.id,
+      hs:(Math.random()*HAIR_MAPS.length)|0,
+      hc:(Math.random()*HAIR_COLORS.length)|0,
+      sk:(Math.random()*SKIN_COLORS.length)|0,
+      ac:(Math.random()*ACC_NAMES.length)|0,
+      bt:(Math.random()*BOOT_COLORS.length)|0
+    };
+    custLeague=rt.lg;
+    saveAvatar();
+    renderCustomizer(returnTo);
+  };
+  o.querySelectorAll('[data-lg]').forEach(b=>b.onclick=()=>{custLeague=b.dataset.lg;renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-tid]').forEach(b=>b.onclick=()=>{myAvatar.t=b.dataset.tid;saveAvatar();renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-hs]').forEach(b=>b.onclick=()=>{myAvatar.hs=+b.dataset.hs;saveAvatar();renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-hc]').forEach(b=>b.onclick=()=>{myAvatar.hc=+b.dataset.hc;saveAvatar();renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{myAvatar.sk=+b.dataset.sk;saveAvatar();renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{myAvatar.bt=+b.dataset.bt;saveAvatar();renderCustomizer(returnTo)});
+  o.querySelectorAll('[data-ac]').forEach(b=>b.onclick=()=>{myAvatar.ac=+b.dataset.ac;saveAvatar();renderCustomizer(returnTo)});
+  $('av-save').onclick=()=>{
+    gn();
+    saveAvatar();
+    if(isMp){
+      if(myRole==='host'&&mpHost){mpHost.syncSelf();mpHost.broadcast({t:'lobby_sync',state:mpHost.state})}
+      else if(myRole==='guest'&&mpClient){mpClient.sendProfile()}
+    }
+    if(returnTo==='lobby'&&isMp)renderLobby();
+    else menu();
+  };
+}
+
+/* =========================================================
    MENÜ VE LOBİ EKRANLARI
    ========================================================= */
 function menu(){
   leave();st='menu';locked=true;const o=$('ov');o.style.display='flex';
+  const curTm=resolveTeam(myAvatar,0);
+  const avData=esc(JSON.stringify({av:myAvatar,seat:0}));
   o.innerHTML=`<h1>NURULLAH’IN SINAVI</h1>
   <p>Fizik Mühendisliği · 90+ soru · Telefon elinde, hoca amfide!</p>
-  <p>Oyuncu adın:</p>
-  <input id='nm' maxlength='10' placeholder='Nurullah'>
+  <div class="av-card">
+    <canvas class="av-mini" width="36" height="45" data-av="${avData}"></canvas>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+      <input id='nm' maxlength='10' placeholder='Adın (Nurullah)' style="font-size:21px;padding:3px 6px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span style="font-size:17px;color:#8fd3ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${teamBadgeHtml(myAvatar,0)} ${esc(myAvatar.t==='auto'?'Klasik Forma':curTm.n)}
+        </span>
+        <button id="btn-cust" style="width:auto;max-width:none;flex-shrink:0;white-space:nowrap;font-size:16px;padding:3px 8px;border-width:2px">👕 Özelleştir</button>
+      </div>
+    </div>
+  </div>
   <div style="font-size:18px;color:#8fd3ff;margin-top:2px">Tek Kişilik Sınav:</div>
   <div class="row">
    <button id="tog-ai" style="flex:1;font-size:19px;${noAi?'border-color:#ff6b6b;color:#ff6b6b':'border-color:#4ade80;color:#4ade80'}">${noAi?'🚫 YZ’SİZ (Saf Bilgi)':'🤖 YZ’Lİ (Kopyalı)'}</button>
@@ -693,12 +1140,15 @@ function menu(){
   <button id='dl' style="background:#2b3060;color:#f5d76e">⚔️ ÇOK OYUNCULU MOD (2-8 Kişi)</button>
   <button id='fsb' style='font-size:20px'>⛶ Tam ekran</button>
   <div style="margin-top:5px;display:flex;justify-content:space-between;align-items:center;font-size:16px;color:#4ade80;width:100%;max-width:340px">
-    <span>● Sürüm v3.1 (Bulut Motoru)</span>
+    <span>● Sürüm v4.0 (Takımlar & Bulut)</span>
     <span id="btn-upd" style="color:#8fd3ff;text-decoration:underline;cursor:pointer">Önbelleği Temizle</span>
   </div>`;
-  
+
   $('nm').value=myName;
-  $('tog-ai').onclick=()=>{noAi=!noAi;menu()};
+  $('nm').oninput=()=>{myName=$('nm').value.trim().slice(0,10);try{localStorage.setItem('nname',myName)}catch(x){}};
+  renderAvatarCanvases(o);
+  $('btn-cust').onclick=()=>{au();gn();customizeMenu('menu')};
+  $('tog-ai').onclick=()=>{gn();noAi=!noAi;menu()};
   o.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{au();gn();startSolo(+b.dataset.d)});
   $('dl').onclick=()=>{au();gn();duelMenu()};
   $('fsb').onclick=toggleFullScreen;
@@ -710,29 +1160,64 @@ function toggleFullScreen(){
   try{(d.fullscreenElement||d.webkitFullscreenElement)?(d.exitFullscreen||d.webkitExitFullscreen).call(d):(e.requestFullscreen||e.webkitRequestFullscreen).call(e)}catch(x){}
 }
 
-function duelMenu(msg){
-  st='menu';const o=$('ov');
+function extractRoomCode(raw){
+  if(!raw)return null;
+  const s=String(raw).trim();
+  const qm=s.match(/[?&#](?:oda|room|code|kod)=([A-Z0-9]{4})\b/i);
+  const bm=s.match(/[?&#]b=(\d)/i);
+  if(qm)return{code:qm[1].toUpperCase(),broker:bm&&MQTT_BROKERS[+bm[1]]?+bm[1]:null};
+  const km=s.match(/(?:oda\s*kodu|kod)\s*[:\-]?\s*([A-Z0-9]{4})\b/i);
+  if(km)return{code:km[1].toUpperCase(),broker:null};
+  const clean=s.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(/^[A-Z0-9]{4}$/.test(clean))return{code:clean,broker:null};
+  return null;
+}
+
+function duelMenu(msg, prefillCode){
+  st='menu';const o=$('ov');o.style.display='flex';
+  const showRetry=!!(prefillCode&&msg);
   o.innerHTML=`<h1>⚔️ ÇOK OYUNCULU</h1>
   <p>Arkadaşlarınla aynı sınıfta canlı yarış (2 - 8 Oyuncu)</p>
   <button id='gen' style="background:#1f7a3a;color:#fff;border-color:#4ade80">🎲 Yeni Oda Aç (Oda Kur)</button>
-  <p>veya arkadaşının 4 haneli oda kodunu gir:</p>
-  <input id='cd' maxlength='4' placeholder='KOD' style='text-transform:uppercase'>
-  <button id='jn'>Odaya Katıl</button>
+  <p>veya oda kodunu / WhatsApp davet linkini yapıştır:</p>
+  <input id='cd' placeholder='4 Haneli KOD veya Link' style='text-transform:uppercase'>
+  <div class="row">
+    <button id='jn' style="flex:1">Odaya Katıl</button>
+    ${showRetry?`<button id='rtry' style="flex:1;background:#1f7a3a;color:#fff;border-color:#4ade80">🔄 Tekrar Dene</button>`:''}
+  </div>
   <p id='ds' style='color:#ff6b6b;min-height:22px'>${msg||''}</p>
   <button id='bk' style='font-size:20px'>← Ana Menü</button>
   <div style="margin-top:6px;font-size:15px;color:#8fd3ff;cursor:pointer;text-decoration:underline" id="btn-upd2">🔄 Yeni Sürümü Zorla Yükle / Önbelleği Temizle</div>`;
-  
+
+  if(prefillCode)$('cd').value=prefillCode;
+  $('cd').oninput=()=>{
+    const parsed=extractRoomCode($('cd').value);
+    if(parsed&&$('cd').value.length>4)$('cd').value=parsed.code;
+  };
   $('gen').onclick=()=>startHostConnect();
   $('jn').onclick=()=>{
-    const k=$('cd').value.trim().toUpperCase();
-    if(!/^[A-Z0-9]{4}$/.test(k))return duelMenu('4 haneli kodu gir!');
-    startGuestConnect(k);
+    const parsed=extractRoomCode($('cd').value);
+    if(!parsed)return duelMenu('Geçerli 4 haneli kodu veya davet linkini gir!',$('cd').value.trim());
+    $('cd').value=parsed.code;
+    startGuestConnect(parsed.code,parsed.broker);
   };
+  if($('rtry'))$('rtry').onclick=()=>startGuestConnect(prefillCode,autoJoinBroker);
   $('bk').onclick=menu;
   $('btn-upd2').onclick=forceUpdate;
 }
 
 const newCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let k='';for(let i=0;i<4;i++)k+=c[Math.random()*c.length|0];return k};
+
+function buildInviteUrl(code, brokerIdx){
+  let base='';
+  if(window.location.origin&&window.location.origin!=='null'){
+    const p=window.location.pathname.replace(/\/index\.html$/i,'/');
+    base=window.location.origin+p;
+  }else{
+    base=window.location.href.split('?')[0].split('#')[0];
+  }
+  return base+'?oda='+encodeURIComponent(code)+'&b='+(brokerIdx||0);
+}
 
 async function startHostConnect(){
   const d=$('ds');d.style.color='#8fd3ff';d.textContent='Oda kuruluyor…';
@@ -740,84 +1225,132 @@ async function startHostConnect(){
   try{await loadMqtt()}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı bileşeni yüklenemedi. İnternetini kontrol et.')}
   const code=newCode();
   const hostId='ns_h_'+code+'_'+Math.random().toString(36).slice(2,6);
-  let client;
-  try{client=await connectMqtt(hostId)}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
-  if(tok!==cTok){try{client.disconnect()}catch(e){}return}
+  const metaTopic='nsinav/v3/'+code+'/meta';
+  let conn;
+  try{conn=await connectMqtt(hostId,null,6500,{topic:metaTopic,payload:'',retained:true})}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
+  if(tok!==cTok){try{conn.client.disconnect()}catch(e){}return}
 
   myRole='host';isMp=true;myCode=code;mySeat=0;
-  mpHost=new RoomHost(client,code);
+  mpHost=new RoomHost(conn.client,code,conn.brokerIdx);
   await mpHost.init();
   st='lobby';renderLobby();
 }
 
-async function startGuestConnect(code){
-  const d=$('ds');d.style.color='#8fd3ff';d.textContent='Sunucuya bağlanılıyor…';
+let autoJoinBroker=null;
+async function startGuestConnect(code, preferredBroker = null){
+  autoJoinBroker = preferredBroker;
+  const d=$('ds');
+  if(d){d.style.color='#8fd3ff';d.textContent='Sunucuya bağlanılıyor…';}
   const tok=++cTok;
-  try{await loadMqtt()}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı bileşeni yüklenemedi. İnternetini kontrol et.')}
-  const guestId='ns_g_'+Math.random().toString(36).slice(2,8);
-  let client;
-  try{client=await connectMqtt(guestId)}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.')}
-  if(tok!==cTok){try{client.disconnect()}catch(e){}return}
+  try{await loadMqtt()}catch(e){if(tok!==cTok)return;return duelMenu('Bağlantı bileşeni yüklenemedi. İnternetini kontrol et.',code)}
 
-  d.textContent='Oda aranıyor…';
+  const guestId='ns_g_'+Math.random().toString(36).slice(2,8);
+  let conn;
+  try{conn=await connectMqtt(guestId,preferredBroker,7000)}catch(e){if(tok!==cTok)return;return duelMenu('Sunucuya bağlanılamadı. Tekrar dene.',code)}
+  if(tok!==cTok){try{conn.client.disconnect()}catch(e){}return}
+
+  if(d){d.style.color='#8fd3ff';d.textContent='Oda aranıyor ('+code+')…';}
   myRole='guest';isMp=true;myCode=code;
-  mpClient=new RoomClient(client,code,guestId);
-  await mpClient.init();
+  mpClient=new RoomClient(conn.client,code,guestId,conn.brokerIdx);
 
   let joined=false;
-  mpClient.send({t:'join',name:myName||'Nurullah'});
+  function bindWelcome(clientObj){
+    const orig=clientObj.onWelcome.bind(clientObj);
+    clientObj.onWelcome=(data)=>{
+      if(joined||tok!==cTok)return;
+      joined=true;
+      clearTimeout(to);
+      clearInterval(retryInterval);
+      clearTimeout(altTimer);
+      orig(data);
+    };
+    clientObj.onMeta=()=>{
+      if(!joined&&tok===cTok&&$('ds')){
+        $('ds').style.color='#4ade80';
+        $('ds').textContent='✅ Oda bulundu! Kurucudan onay bekleniyor…';
+      }
+    };
+  }
+  bindWelcome(mpClient);
+
+  await mpClient.init();
+  if(tok!==cTok){leave();return}
+
+  const sendJoin=()=>mpClient&&mpClient.send({t:'join',name:myName||'Nurullah',av:sanitizeAvatar(myAvatar,0)});
+  sendJoin();
 
   const retryInterval=setInterval(()=>{
     if(joined||tok!==cTok){clearInterval(retryInterval);return}
-    mpClient.send({t:'join',name:myName||'Nurullah'});
-  },1200);
+    sendJoin();
+  },900);
+
+  // Eğer 6s yanıt gelmezse ve oda meta sinyali görülmemişse diğer broker'ı da yokla
+  const altTimer=setTimeout(async()=>{
+    if(joined||tok!==cTok||MQTT_BROKERS.length<2)return;
+    if(mpClient&&mpClient.roomSeen)return;
+    const altIdx=(conn.brokerIdx+1)%MQTT_BROKERS.length;
+    const altId='ns_ga_'+Math.random().toString(36).slice(2,8);
+    try{
+      const altConn=await connectMqtt(altId,altIdx,5000);
+      if(joined||tok!==cTok){try{altConn.client.disconnect()}catch(e){}return}
+      const oldClient=mpClient;
+      oldClient.destroyed=true;
+      mpClient=new RoomClient(altConn.client,code,altId,altConn.brokerIdx);
+      bindWelcome(mpClient);
+      await mpClient.init();
+      try{oldClient.client.disconnect()}catch(e){}
+      sendJoin();
+    }catch(e){}
+  },preferredBroker===null?5500:7500);
 
   const to=setTimeout(()=>{
     clearInterval(retryInterval);
-    if(!joined){
+    clearTimeout(altTimer);
+    if(!joined&&tok===cTok){
       joined=true;
       leave();
-      duelMenu('❌ “'+code+'” kodlu oda bulunamadı veya kurucu ayrılmış.');
+      duelMenu('❌ “'+code+'” kodlu oda bulunamadı veya kurucu henüz WhatsApp’tan dönmedi.',code);
     }
-  },4500);
-
-  const origOnWelcome=mpClient.onWelcome.bind(mpClient);
-  mpClient.onWelcome=(data)=>{
-    if(joined)return;
-    joined=true;
-    clearTimeout(to);
-    clearInterval(retryInterval);
-    origOnWelcome(data);
-  };
+  },18000);
 }
 
 function renderLobby(){
   const o=$('ov');o.style.display='flex';
   const isHost=myRole==='host';
   const players=getPlayers();
-  
+
   let h=`<h1>⚔️ SINIF LOBİSİ</h1>`;
   if(isHost){
     h+=`<p>Arkadaşlarına bu kodu ver:</p>
-    <div style='font-size:68px;color:#4ade80;letter-spacing:6px;line-height:1;margin:4px 0;font-weight:bold'>${myCode}</div>
-    <div class="row" style="margin:4px 0 6px 0;width:100%;max-width:340px">
+    <div style='font-size:60px;color:#4ade80;letter-spacing:6px;line-height:1;margin:2px 0;font-weight:bold'>${myCode}</div>
+    <div class="row" style="margin:2px 0 4px 0;width:100%;max-width:340px">
       <button id="wp-share" style="background:#1f7a3a;color:#fff;border-color:#4ade80;flex:1;font-size:18px">📲 WhatsApp Daveti</button>
       <button id="cp-link" style="flex:1;font-size:18px">📋 Linki Kopyala</button>
     </div>`;
   }else{
     h+=`<p>Oda Kodu: <b style="color:#4ade80;font-size:26px">${myCode}</b></p>`;
   }
-  
+
   h+=`<div style="background:#171a33;border:2px solid #55597f;border-radius:4px;padding:6px;width:100%;max-width:340px;text-align:left">
-    <div style="color:#f5d76e;font-size:20px;margin-bottom:4px">Öğrenciler (${players.length}/8):</div>
-    <div style="display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto">
-      ${players.map((p,idx)=>`<div style="display:flex;justify-content:space-between;color:${PCOLORS[p.seat%8].hex};font-size:20px">
-        <span>${p.isHost?'👑':'👤'} ${esc(p.name)} ${p.seat===mySeat?'<span style="color:#fff">(Sen)</span>':''}</span>
-        <span style="color:#8fd3ff">${idx===0?'Kurucu':'Hazır'}</span>
-      </div>`).join('')}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="color:#f5d76e;font-size:19px">Öğrenciler (${players.length}/8):</span>
+      <button id="lb-cust" style="width:auto;max-width:none;font-size:16px;padding:2px 8px;border-width:2px">👕 Karakter / Ad</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;max-height:132px;overflow-y:auto">
+      ${players.map((p,idx)=>{
+        const avD=esc(JSON.stringify({av:sanitizeAvatar(p.av,p.seat),seat:p.seat}));
+        const col=PCOLORS[p.seat%8];
+        return `<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;color:${col.hex};font-size:19px">
+          <span style="display:flex;align-items:center;gap:6px;min-width:0">
+            <canvas width="24" height="30" style="width:24px;height:30px;aspect-ratio:auto;border:1px solid #55597f;background:#1d3b2f;flex:none" data-av="${avD}"></canvas>
+            <span>${p.isHost?'👑':''}${esc(p.name)} ${teamBadgeHtml(p.av,p.seat)} ${p.seat===mySeat?'<span style="color:#fff">(Sen)</span>':''}</span>
+          </span>
+          <span style="color:#8fd3ff;flex:none">${idx===0?'Kurucu':'Hazır'}</span>
+        </div>`;
+      }).join('')}
     </div>
   </div>`;
-  
+
   if(isHost){
     h+=`<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:5px;margin-top:2px">
       <div style="font-size:18px;color:#8fd3ff">Zorluk:</div>
@@ -843,16 +1376,20 @@ function renderLobby(){
       <p style="color:#8fd3ff;margin-top:6px">Kurucunun oyunu başlatması bekleniyor…</p>
     </div>`;
   }
-  
+
   h+=`<button id='bk' style='font-size:20px;margin-top:2px'>← Ayrıl</button>`;
   o.innerHTML=h;
-  
+  renderAvatarCanvases(o);
+
   $('bk').onclick=menu;
+  $('lb-cust').onclick=()=>{au();customizeMenu('lobby')};
   if(isHost){
-    const inviteUrl = window.location.origin + window.location.pathname + '?oda=' + myCode + '&v=3';
+    const inviteUrl = buildInviteUrl(myCode, mpHost ? mpHost.brokerIdx : 0);
     $('wp-share').onclick = () => {
       const txt = encodeURIComponent("Nurullah'ın Sınavı oyununa davet edildin! 🎮\nOda Kodu: " + myCode + "\nDoğrudan odaya katılmak için tıkla:\n" + inviteUrl);
-      window.open('https://api.whatsapp.com/send?text=' + txt, '_blank');
+      const waUrl = 'https://api.whatsapp.com/send?text=' + txt;
+      const w = window.open(waUrl, '_blank', 'noopener,noreferrer');
+      if (!w) window.location.href = waUrl;
     };
     $('cp-link').onclick = () => {
       if(navigator.clipboard && navigator.clipboard.writeText){
@@ -1182,7 +1719,7 @@ function endGame(exp){
       const isMe=(myRole==='host'&&p.id==='host')||(myRole==='guest'&&p.seat===mySeat);
       return `<tr style="${isMe?'background:#1c2b4a':''}">
         <td>${medal}</td>
-        <td style="color:${PCOLORS[p.seat%8].hex}">${esc(p.name)} ${isMe?'(Sen)':''}</td>
+        <td style="color:${PCOLORS[p.seat%8].hex}">${esc(p.name)} ${teamBadgeHtml(p.av,p.seat)} ${isMe?'(Sen)':''}</td>
         <td>${p.score||0} Puan</td>
         <td style="font-size:16px">${p.exp?'❌ Atıldı':(p.corr||0)+'/'+n}</td>
       </tr>`;
@@ -1295,9 +1832,8 @@ function draw(t){
     const sprW=12*scale;
     if(isMe)myCx=px+sprW/2;
     
-    // Draw character sprite with assigned shirt color
-    const customPalette={H:hair[p.seat%4],S:'#f1c27d',E:'#111',T:col.hex,P:'#2f4b9c',B:'#222'};
-    spr(px,py,scale,customPalette);
+    // Draw customized pixel character + football team jersey
+    drawPlayerSprite(ctx,px,py,scale,p.av,p.seat);
     
     // Desk
     const dW=isBack?22:36;
@@ -1313,9 +1849,11 @@ function draw(t){
     }
     
     // PIXEL NAMEPLATE (SUPER CRISP AND READABLE)
+    const tm=resolveTeam(p.av,p.seat);
+    const hasTeam=!!tm.code;
     const nameStr=p.name||('P'+(p.seat+1));
     const nw=strW(nameStr);
-    const badgeW=nw+6;
+    const badgeW=nw+(hasTeam?9:6);
     const badgeH=10;
     const badgeX=Math.round(px+(sprW/2)-(badgeW/2));
     const badgeY=py-(scale===2?11:10);
@@ -1323,15 +1861,19 @@ function draw(t){
     // Dark backdrop pill with colored border
     R('rgba(10,12,24,0.94)',badgeX,badgeY,badgeW,badgeH);
     // 1px border
-    const borderCol=isMe?'#f5d76e':col.hex;
+    const borderCol=isMe?'#f5d76e':(hasTeam?tm.p:col.hex);
     ctx.fillStyle=borderCol;
     ctx.fillRect(badgeX,badgeY,badgeW,1);
     ctx.fillRect(badgeX,badgeY+badgeH-1,badgeW,1);
     ctx.fillRect(badgeX,badgeY,1,badgeH);
     ctx.fillRect(badgeX+badgeW-1,badgeY,1,badgeH);
+    if(hasTeam){
+      R(tm.p,badgeX+2,badgeY+2,2,3);
+      R(tm.s,badgeX+2,badgeY+5,2,3);
+    }
     
     // Crisp pixel text
-    drawPix(nameStr,badgeX+3,badgeY+3,isMe?'#f5d76e':'#ffffff');
+    drawPix(nameStr,badgeX+(hasTeam?6:3),badgeY+3,isMe?'#f5d76e':'#ffffff');
     
     // CHECKMARK OVER HEAD ("doğru bulanın kafasında tik yansın")
     const tu=tickOf(p);
@@ -1383,19 +1925,35 @@ ab.addEventListener('contextmenu',e=>e.preventDefault());
 menu();
 requestAnimationFrame(loop);
 
-/* Otomatik Oda Katılımı (?oda=KOD) */
-try {
-  const urlParams = new URLSearchParams(window.location.search);
-  const autoRoom = urlParams.get('oda') || urlParams.get('room');
-  if (autoRoom && /^[A-Z0-9]{4}$/i.test(autoRoom.trim())) {
-    setTimeout(() => {
-      duelMenu();
-      const codeClean = autoRoom.trim().toUpperCase();
-      if ($('cd')) $('cd').value = codeClean;
-      startGuestConnect(codeClean);
-    }, 400);
-  }
-} catch(e) {}
+/* Otomatik Oda Katılımı (?oda=KOD veya #oda=KOD) */
+function extractRoomFromUrl(){
+  try{
+    const sources=[window.location.search,window.location.hash.replace(/^#/,'?')];
+    for(const s of sources){
+      if(!s)continue;
+      const p=new URLSearchParams(s);
+      const raw=p.get('oda')||p.get('room')||p.get('code')||p.get('kod');
+      if(raw){
+        const m=raw.toUpperCase().match(/[A-Z0-9]{4}/);
+        if(m){
+          const bRaw=p.get('b');
+          const bIdx=(bRaw!==null&&/^\d+$/.test(bRaw)&&MQTT_BROKERS[+bRaw])?+bRaw:null;
+          return{code:m[0],broker:bIdx};
+        }
+      }
+    }
+    const hm=(window.location.hash||'').toUpperCase().match(/^#([A-Z0-9]{4})$/);
+    if(hm)return{code:hm[1],broker:null};
+  }catch(e){}
+  return null;
+}
+const autoJoin=extractRoomFromUrl();
+if(autoJoin){
+  setTimeout(()=>{
+    duelMenu('',autoJoin.code);
+    startGuestConnect(autoJoin.code,autoJoin.broker);
+  },60);
+}
 
 /* PWA Service Worker & Auto Update */
 if('serviceWorker' in navigator){
@@ -1406,8 +1964,10 @@ if('serviceWorker' in navigator){
         if (installing) {
           installing.onstatechange = () => {
             if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-              showBanner('⚡ Yeni sürüm yüklendi! Yenileniyor...', 1500);
-              setTimeout(() => window.location.reload(), 1200);
+              if (!autoJoin && !isMp) {
+                showBanner('⚡ Yeni sürüm yüklendi! Yenileniyor...', 1500);
+                setTimeout(() => window.location.reload(), 1200);
+              }
             }
           };
         }

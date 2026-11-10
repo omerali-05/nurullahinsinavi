@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nurullah-sinavi-v3';
+const CACHE_NAME = 'nurullah-sinavi-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -37,22 +37,23 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
 
   const url = new URL(e.request.url);
-  const isHtml = e.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/';
+  const hasInviteParam = url.searchParams.has('oda') || url.searchParams.has('room') || url.searchParams.has('code') || url.searchParams.has('kod');
+  const isHtml = e.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || (!url.pathname.includes('.') && url.origin === self.location.origin);
 
   if (isHtml) {
-    // HTML / Sayfalar için: NETWORK-FIRST (Önce ağdan en günceli al, internet yoksa önbellekten aç)
+    // HTML / Sayfalar için: NETWORK-FIRST (Davet linklerini asla önbelleğe gömmeden taze aç)
     e.respondWith(
       fetch(e.request)
         .then((res) => {
-          if (res && res.status === 200) {
+          if (res && res.status === 200 && !hasInviteParam) {
             const clone = res.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
           }
           return res;
         })
         .catch(() => {
-          return caches.match(e.request).then((cached) => {
-            return cached || caches.match('./index.html');
+          return caches.match(e.request, { ignoreSearch: true }).then((cached) => {
+            return cached || caches.match('./index.html') || caches.match('./');
           });
         })
     );
